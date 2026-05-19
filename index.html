@@ -305,7 +305,7 @@
                     </label>
                     <select id="subject-choice"
                         class="w-full bg-black/50 border border-gray-800 p-3 rounded-sm text-sm focus:border-pink-500 outline-none text-white cyber-font">
-                        <option value="network" class="bg-black">Network Computing (700)</option>
+                        <option value="network" class="bg-black">Network Computing</option>
                         <option value="software_engineering" class="bg-black">Software Engineering</option>
                     </select>
                 </div>
@@ -638,7 +638,7 @@
                     const questions = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
                     state.bank = questions;
 
-                    state.activeQs = [...state.bank].sort(() => 0.5 - Math.random()).slice(0, 30);
+                    state.activeQs = [...state.bank].sort(() => 0.5 - Math.random()).slice(0, 5);
                     state.cur = 0;
                     window.showSection('quiz');
                     state.testing = true;

@@ -1,0 +1,18 @@
+# ============================================================
+# NEVER COMMIT SECRETS OR JUNK FILES
+# ============================================================
+
+# Environment secrets
+.env
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environments
+venv/
+.venv/
+
+# IDE
+.vscode/settings.json

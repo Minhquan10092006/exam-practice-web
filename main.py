@@ -13,6 +13,10 @@ import bson
 from google import genai
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad
+from dotenv import load_dotenv
+
+# Load secrets from .env (must be before anything that reads os.getenv)
+load_dotenv()
 
 # --- PHẦN 1: CẤU HÌNH HỆ THỐNG (CONFIGURATION) ---
 # Ép dùng Google DNS để tránh lỗi Resolution (Phân giải tên miền) tại nhà mới
@@ -29,17 +33,25 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Cấu hình AES (Bảo mật Network Tab)
-SECRET_KEY = b"UET_PROCTOR_2026"  # 16 bytes cho AES-128
-IV = b"1234567890123456"
+# Cấu hình AES (Bảo mật Network Tab) — loaded from .env
+_aes_key_str = os.getenv("AES_SECRET_KEY", "")
+_aes_iv_str  = os.getenv("AES_IV", "")
+if not _aes_key_str or not _aes_iv_str:
+    raise RuntimeError("Thiếu AES_SECRET_KEY hoặc AES_IV trong file .env!")
+SECRET_KEY = _aes_key_str.encode("utf-8")  # 16 bytes cho AES-128
+IV         = _aes_iv_str.encode("utf-8")
 
-# Cấu hình MongoDB
-MONGO_URI = "mongodb+srv://mquan1009206:vaicalon@quiz.teadgrn.mongodb.net/?appName=quiz"
+# Cấu hình MongoDB — loaded from .env
+MONGO_URI = os.getenv("MONGO_URI", "")
+if not MONGO_URI:
+    raise RuntimeError("Thiếu MONGO_URI trong file .env!")
 client_db = AsyncIOMotorClient(MONGO_URI)
 db = client_db.quizdb
 
-# Cấu hình Gemini AI
-GEMINI_API_KEY = "AQ.Ab8RN6LefyXzw9mG1oo2gcBmEvb-vdV9MUFK7xhddRby-ClR3Q"
+# Cấu hình Gemini AI — loaded from .env
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+if not GEMINI_API_KEY:
+    raise RuntimeError("Thiếu GEMINI_API_KEY trong file .env!")
 client_gemini = genai.Client(api_key=GEMINI_API_KEY)
 
 # --- PHẦN 2: CÔNG CỤ HỖ TRỢ (HELPERS) ---
