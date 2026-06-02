@@ -740,6 +740,91 @@
             animation: slideIn .3s ease forwards;
         }
 
+        /* Short Answer (Fill) Question Styles */
+        .fill-answer-area {
+            width: 100%;
+            min-height: 120px;
+            max-height: 300px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-primary);
+            border-radius: 12px;
+            padding: 16px;
+            color: var(--text-primary);
+            font-family: 'Be Vietnam Pro', sans-serif;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            outline: none;
+            resize: vertical;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .fill-answer-area:focus {
+            border-color: var(--accent-1);
+            box-shadow: 0 0 20px var(--glass-shadow), 0 0 40px rgba(0, 242, 255, 0.05);
+        }
+
+        .fill-answer-area::placeholder {
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .fill-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            font-family: 'Chakra Petch', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: rgba(255, 170, 0, 0.12);
+            color: var(--neon-yellow);
+            border: 1px solid rgba(255, 170, 0, 0.3);
+            animation: fillBadgePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes fillBadgePulse {
+            0%, 100% { box-shadow: 0 0 0 rgba(255, 170, 0, 0); }
+            50% { box-shadow: 0 0 12px rgba(255, 170, 0, 0.2); }
+        }
+
+        .fill-hint {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            background: rgba(255, 170, 0, 0.05);
+            border: 1px solid rgba(255, 170, 0, 0.15);
+            font-size: 0.8rem;
+            color: var(--neon-yellow);
+            margin-bottom: 16px;
+        }
+
+        .fill-correct-answer {
+            padding: 14px 18px;
+            border-radius: 12px;
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            white-space: pre-wrap;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--neon-green);
+        }
+
+        .fill-user-answer {
+            padding: 14px 18px;
+            border-radius: 12px;
+            background: rgba(0, 242, 255, 0.05);
+            border: 1px solid rgba(0, 242, 255, 0.15);
+            white-space: pre-wrap;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
         /* ================================================================
            SECTION 16: SCORE RING
            ================================================================ */
@@ -1382,7 +1467,7 @@
                     style="background:var(--bg-card);color:var(--accent-3);border:1px solid var(--border-primary);">v4.0</span>
             </div>
             <div class="flex items-center gap-2 md:gap-3 flex-wrap nav-links">
-                <button id="nav-home" onclick="showSection('home')" class="nav-btn">Home</button>
+                <button id="nav-home" onclick="showSection('home')" class="nav-btn nav-active">Home</button>
                 <button id="nav-flashcard" onclick="showSection('flashcard')" class="nav-btn">Flash</button>
                 <button id="nav-practice" onclick="showSection('practice')" class="nav-btn">Practice</button>
                 <button id="nav-dashboard" onclick="showSection('dashboard')" class="nav-btn">Dashboard</button>
@@ -1409,7 +1494,7 @@
         <!-- ============================================================
              HOME SECTION
              ============================================================ -->
-        <section id="section-home" class="app-section text-center">
+        <section id="section-home" class="app-section section-visible text-center">
             <h1 class="text-4xl md:text-6xl font-black cyber-font mb-6 glow-text-blue italic glitch"
                 data-text="READY TO CONNECT?">
                 READY TO CONNECT?
@@ -1425,8 +1510,8 @@
                     <div class="text-xs uppercase font-bold" style="color:var(--text-muted)">Câu hỏi</div>
                 </div>
                 <div class="stat-chip chip-pulse" style="animation-delay:.4s">
-                    <div class="text-3xl mb-1 font-black cyber-font" style="color:var(--accent-2)">30s</div>
-                    <div class="text-xs uppercase font-bold" style="color:var(--text-muted)">Mỗi câu</div>
+                    <div class="text-3xl mb-1 font-black cyber-font" style="color:var(--accent-2)">30/90s</div>
+                    <div class="text-xs uppercase font-bold" style="color:var(--text-muted)">MCQ / Fill</div>
                 </div>
                 <div class="stat-chip chip-pulse" style="animation-delay:.8s">
                     <div class="text-3xl mb-1 font-black cyber-font" style="color:var(--neon-green)">AI</div>
@@ -1933,17 +2018,24 @@
             </div>
             <div class="space-y-4">
                 <div>
+                    <label class="block text-xs cyber-font mb-1 uppercase" style="color:var(--accent-1)">Loại câu hỏi</label>
+                    <select id="modal-type" class="cyber-input" onchange="toggleModalType()">
+                        <option value="multiple_choice">Trắc nghiệm (Multiple Choice)</option>
+                        <option value="short_answer">Câu hỏi điền (Fill / Short Answer)</option>
+                    </select>
+                </div>
+                <div>
                     <label class="block text-xs cyber-font mb-1 uppercase" style="color:var(--accent-1)">Câu hỏi</label>
                     <textarea id="modal-q" class="cyber-input" rows="3" placeholder="Nội dung câu hỏi..."></textarea>
                 </div>
-                <div>
+                <div id="modal-options-group">
                     <label class="block text-xs cyber-font mb-1 uppercase" style="color:var(--accent-1)">Lựa chọn (mỗi
                         dòng 1 lựa chọn)</label>
                     <textarea id="modal-options" class="cyber-input mono-font" rows="4"
                         placeholder="Option A&#10;Option B&#10;Option C&#10;Option D"></textarea>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
-                    <div>
+                    <div id="modal-answer-group">
                         <label class="block text-xs cyber-font mb-1 uppercase" style="color:var(--accent-1)">Đáp án đúng
                             (0-based index)</label>
                         <input type="number" id="modal-answer" class="cyber-input" min="0" max="9" placeholder="0">
@@ -1953,6 +2045,11 @@
                             học</label>
                         <select id="modal-subject" class="cyber-input"></select>
                     </div>
+                </div>
+                <div id="modal-ans-text-group" class="hidden">
+                    <label class="block text-xs cyber-font mb-1 uppercase" style="color:var(--neon-yellow)">📝 Đáp án điền (text)</label>
+                    <textarea id="modal-ans-text" class="cyber-input mono-font" rows="4"
+                        placeholder="Nhập đáp án tham khảo cho câu hỏi điền..."></textarea>
                 </div>
                 <input type="hidden" id="modal-edit-id" value="">
                 <div class="flex gap-3 mt-6">
@@ -2378,7 +2475,18 @@
                     }
 
                     state.bank = questions;
-                    state.activeQs = [].concat(state.bank).sort(function () { return 0.5 - Math.random(); }).slice(0, 10);
+
+                    // Separate short_answer and MCQ, then mix: 2-3 fill + rest MCQ = 30 total
+                    var fillQs = state.bank.filter(function(q) { return q.type === 'short_answer'; });
+                    var mcqQs = state.bank.filter(function(q) { return q.type !== 'short_answer'; });
+                    fillQs.sort(function() { return 0.5 - Math.random(); });
+                    mcqQs.sort(function() { return 0.5 - Math.random(); });
+
+                    var fillCount = Math.min(fillQs.length, Math.floor(Math.random() * 2) + 2); // 2-3 fill
+                    var mcqCount = 30 - fillCount;
+                    var selectedFill = fillQs.slice(0, fillCount);
+                    var selectedMcq = mcqQs.slice(0, mcqCount);
+                    state.activeQs = [].concat(selectedMcq, selectedFill).sort(function() { return 0.5 - Math.random(); });
                     state.cur = 0;
                     state.ans = [];
                     state.tabOuts = 0; state.copyAttempts = 0; state.pasteAttempts = 0;
@@ -2397,14 +2505,22 @@
             };
 
             window.handleNext = function () {
-                var sel = document.querySelector('input[name="opt"]:checked');
-                var val = sel ? parseInt(sel.value) : -1;
-
                 var currentQ = state.activeQs[state.cur];
                 var q_id = currentQ.q_id || ('offline-' + state.cur);
+                var isFill = currentQ.type === 'short_answer';
+                var val;
+
+                if (isFill) {
+                    // Capture text from textarea
+                    var textarea = document.getElementById('fill-answer-input');
+                    val = textarea ? textarea.value.trim() : '';
+                } else {
+                    var sel = document.querySelector('input[name="opt"]:checked');
+                    val = sel ? parseInt(sel.value) : -1;
+                }
 
                 var duration = (Date.now() - state.questionStartTime) / 1000;
-                if (val !== -1 && duration < 3) {
+                if (!isFill && val !== -1 && duration < 3) {
                     state.fastAnswers++;
                     var fastEl = document.getElementById('stat-fast');
                     if (fastEl) fastEl.textContent = state.fastAnswers;
@@ -2417,7 +2533,7 @@
                 fetch('/api/submit-choice', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ q_id: q_id, choice: val, mssv: state.studentId })
+                    body: JSON.stringify({ q_id: q_id, choice: val, mssv: state.studentId, type: isFill ? 'short_answer' : 'multiple_choice' })
                 }).catch(function () { });
 
                 state.cur++;
@@ -2427,6 +2543,7 @@
             function loadQ() {
                 if (state.cur >= state.activeQs.length) return finish();
                 var q = state.activeQs[state.cur];
+                var isFill = q.type === 'short_answer';
                 document.getElementById('q-progress').innerText = 'FILE: ' + String(state.cur + 1).padStart(2, '0') + '/' + state.activeQs.length;
                 document.getElementById('q-text').innerText = q.q;
                 var optBox = document.getElementById('q-options');
@@ -2434,41 +2551,70 @@
                 optBox.classList.remove('q-slide');
                 void optBox.offsetWidth;
                 optBox.classList.add('q-slide');
-                var letters = ['A', 'B', 'C', 'D', 'E'];
-                q.options.forEach(function (o, i) {
-                    var d = document.createElement('div');
-                    d.className = 'opt-btn'; d.dataset.idx = i;
-                    d.innerHTML = '<div class="opt-letter">' + (letters[i] || (i + 1)) + '</div><span style="font-size:.95rem">' + o + '</span><input type="radio" name="opt" value="' + i + '" style="display:none">';
-                    d.onclick = function () {
-                        document.querySelectorAll('#q-options .opt-btn').forEach(function (x) { x.classList.remove('opt-selected'); });
-                        d.classList.add('opt-selected');
-                        d.querySelector('input').checked = true;
-                    };
-                    optBox.appendChild(d);
-                });
+
+                if (isFill) {
+                    // Render fill question: hint + textarea
+                    var hintDiv = document.createElement('div');
+                    hintDiv.className = 'fill-hint';
+                    hintDiv.innerHTML = '✏️ <span>CÂU HỎI ĐIỀN — Bạn có <strong>90 giây</strong> để trả lời câu này</span>';
+                    optBox.appendChild(hintDiv);
+
+                    var badge = document.createElement('span');
+                    badge.className = 'fill-badge mb-3';
+                    badge.innerHTML = '📝 FILL QUESTION — 90s';
+                    optBox.appendChild(badge);
+
+                    var ta = document.createElement('textarea');
+                    ta.id = 'fill-answer-input';
+                    ta.className = 'fill-answer-area mt-3';
+                    ta.placeholder = 'Nhập câu trả lời của bạn tại đây...';
+                    ta.rows = 5;
+                    optBox.appendChild(ta);
+                    // Auto focus
+                    setTimeout(function() { ta.focus(); }, 100);
+                } else {
+                    // Render multiple choice options
+                    var letters = ['A', 'B', 'C', 'D', 'E'];
+                    q.options.forEach(function (o, i) {
+                        var d = document.createElement('div');
+                        d.className = 'opt-btn'; d.dataset.idx = i;
+                        d.innerHTML = '<div class="opt-letter">' + (letters[i] || (i + 1)) + '</div><span style="font-size:.95rem">' + o + '</span><input type="radio" name="opt" value="' + i + '" style="display:none">';
+                        d.onclick = function () {
+                            document.querySelectorAll('#q-options .opt-btn').forEach(function (x) { x.classList.remove('opt-selected'); });
+                            d.classList.add('opt-selected');
+                            d.querySelector('input').checked = true;
+                        };
+                        optBox.appendChild(d);
+                    });
+                }
+
                 // Progress bar
                 var fill = document.getElementById('q-prog-fill');
                 if (fill) fill.style.width = (state.cur / state.activeQs.length * 100) + '%';
                 state.questionStartTime = Date.now();
-                startTimer();
+                startTimer(isFill ? 90 : 30);
             }
 
-            function startTimer() {
+            function startTimer(seconds) {
                 clearInterval(state.timer);
-                state.time = 30;
+                var maxTime = seconds || 30;
+                state.time = maxTime;
                 var numEl = document.getElementById('timer-num');
                 var ring = document.getElementById('timer-ring-fg');
                 var circ = 169.6;
 
                 function updateRing() {
-                    var ratio = state.time / 30;
+                    var ratio = state.time / maxTime;
                     if (ring) {
                         ring.style.strokeDashoffset = circ * (1 - ratio);
-                        ring.style.stroke = state.time > 15 ? '#00ff88' : state.time > 8 ? '#ffaa00' : '#ff3333';
+                        // Color thresholds adjusted for longer timers
+                        var greenThreshold = maxTime * 0.5;
+                        var yellowThreshold = maxTime * 0.27;
+                        ring.style.stroke = state.time > greenThreshold ? '#00ff88' : state.time > yellowThreshold ? '#ffaa00' : '#ff3333';
                     }
                     if (numEl) {
                         numEl.textContent = state.time;
-                        numEl.style.color = state.time > 8 ? '#fff' : '#ff3333';
+                        numEl.style.color = state.time > (maxTime * 0.27) ? '#fff' : '#ff3333';
                     }
                 }
                 updateRing();
@@ -2506,26 +2652,46 @@
                     state.activeQs.forEach(function (q, i) {
                         var userChoice = state.ans[i];
                         var rightChoice = correctAnswersMap[q.q_id];
-                        var isCorrect = userChoice === rightChoice;
-                        if (isCorrect) {
-                            correct++;
-                            // Spaced repetition: track correct for wrong qs
-                            trackSRCorrect(q.q_id);
+                        var isFill = q.type === 'short_answer';
+
+                        if (isFill) {
+                            // Fill questions: show both answers for manual comparison (not auto-graded)
+                            var ansData = rightChoice; // This is {type: 'short_answer', ans: '...'} from server
+                            var correctText = (ansData && ansData.ans) ? ansData.ans : (typeof rightChoice === 'string' ? rightChoice : 'N/A');
+                            var userText = typeof userChoice === 'string' ? userChoice : 'Bỏ trống';
+
+                            reviewHtml += '<div class="review-card" style="border-left:3px solid var(--neon-yellow)">' +
+                                '<div class="flex items-center gap-2 mb-2"><span class="fill-badge">📝 FILL</span></div>' +
+                                '<p class="font-bold text-sm mb-3">' + (i + 1) + '. ' + q.q + '</p>' +
+                                '<div class="mb-2"><span class="text-xs uppercase font-bold" style="color:var(--text-muted)">Bạn trả lời:</span></div>' +
+                                '<div class="fill-user-answer mb-3">' + (userText || '<em style="color:var(--text-muted)">Không trả lời</em>') + '</div>' +
+                                '<div class="mb-2"><span class="text-xs uppercase font-bold" style="color:var(--neon-green)">Đáp án tham khảo:</span></div>' +
+                                '<div class="fill-correct-answer">' + correctText + '</div>' +
+                                '<div class="mt-2"><button class="btn-ai-explain" onclick="explainResultQuestion(' + i + ')">🤖 Explain with AI</button></div>' +
+                                '<div id="result-explain-' + i + '"></div>' +
+                                '</div>';
                         } else {
-                            saveWrongQuestion(q, rightChoice, state.currentSubject);
-                            resetSRStreak(q.q_id);
+                            // MCQ: auto-grade as before
+                            var isCorrect = userChoice === rightChoice;
+                            if (isCorrect) {
+                                correct++;
+                                trackSRCorrect(q.q_id);
+                            } else {
+                                saveWrongQuestion(q, rightChoice, state.currentSubject);
+                                resetSRStreak(q.q_id);
+                            }
+
+                            var userAnsText = userChoice === -1 ? 'Bỏ trống' : q.options[userChoice];
+                            var correctAnsText = q.options[rightChoice] !== undefined ? q.options[rightChoice] : 'N/A';
+
+                            reviewHtml += '<div class="review-card ' + (isCorrect ? 'correct' : 'wrong') + '">' +
+                                '<p class="font-bold text-sm mb-2">' + (i + 1) + '. ' + q.q + '</p>' +
+                                '<p class="text-sm" style="color:' + (isCorrect ? 'var(--neon-green)' : 'var(--neon-red)') + '">▸ Bạn chọn: ' + userAnsText + '</p>' +
+                                (!isCorrect ? '<p class="text-xs mt-1 italic" style="color:var(--accent-1)">▸ Đúng: ' + correctAnsText + '</p>' : '') +
+                                '<div class="mt-2"><button class="btn-ai-explain" onclick="explainResultQuestion(' + i + ')">🤖 Explain with AI</button></div>' +
+                                '<div id="result-explain-' + i + '"></div>' +
+                                '</div>';
                         }
-
-                        var userAnsText = userChoice === -1 ? 'Bỏ trống' : q.options[userChoice];
-                        var correctAnsText = q.options[rightChoice] !== undefined ? q.options[rightChoice] : 'N/A';
-
-                        reviewHtml += '<div class="review-card ' + (isCorrect ? 'correct' : 'wrong') + '">' +
-                            '<p class="font-bold text-sm mb-2">' + (i + 1) + '. ' + q.q + '</p>' +
-                            '<p class="text-sm" style="color:' + (isCorrect ? 'var(--neon-green)' : 'var(--neon-red)') + '">▸ Bạn chọn: ' + userAnsText + '</p>' +
-                            (!isCorrect ? '<p class="text-xs mt-1 italic" style="color:var(--accent-1)">▸ Đúng: ' + correctAnsText + '</p>' : '') +
-                            '<div class="mt-2"><button class="btn-ai-explain" onclick="explainResultQuestion(' + i + ')">🤖 Explain with AI</button></div>' +
-                            '<div id="result-explain-' + i + '"></div>' +
-                            '</div>';
                     });
 
                     var total = state.activeQs.length;
@@ -2659,15 +2825,31 @@
 
                 container.innerHTML = '<div class="ai-explain-box"><span class="dot-pulse" style="color:var(--text-muted)">Đang hỏi AI</span></div>';
 
+                var isFill = q.type === 'short_answer';
+                var correctAnsText = 'N/A';
+                var userAnsText = 'Bỏ trống';
+
+                if (isFill) {
+                    if (correctIdx && typeof correctIdx === 'object' && correctIdx.ans) {
+                        correctAnsText = correctIdx.ans;
+                    } else if (typeof correctIdx === 'string') {
+                        correctAnsText = correctIdx;
+                    }
+                    userAnsText = typeof state.ans[idx] === 'string' ? state.ans[idx] : 'Bỏ trống';
+                } else {
+                    correctAnsText = correctIdx !== null ? (q.options[correctIdx] || 'N/A') : 'N/A';
+                    userAnsText = state.ans[idx] >= 0 ? q.options[state.ans[idx]] : 'Bỏ trống';
+                }
+
                 try {
                     var res = await fetch('/api/explain', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             question: q.q,
-                            options: q.options,
-                            correct_answer: correctIdx !== null ? q.options[correctIdx] : 'N/A',
-                            user_answer: state.ans[idx] >= 0 ? q.options[state.ans[idx]] : 'Bỏ trống'
+                            options: isFill ? [] : q.options,
+                            correct_answer: correctAnsText,
+                            user_answer: userAnsText
                         })
                     });
                     var data = await res.json();
@@ -2750,7 +2932,7 @@
                         alert('Chưa có câu hỏi sai nào! Hãy làm bài thi hoặc luyện tập trước.');
                         return;
                     }
-                    fcState.cards = wrongQs.map(function (q) { return { q: q.q, options: q.options, ansIdx: q.ansIdx, q_id: q.q_id }; });
+                    fcState.cards = wrongQs.map(function (q) { return { q: q.q, options: q.options, ansIdx: q.ansIdx, q_id: q.q_id, type: q.type || 'multiple_choice' }; });
                     fcState.cards.sort(function () { return 0.5 - Math.random(); });
                     fcState.cur = 0; fcState.seen = new Set(); fcState.known = new Set();
                     renderFC();
@@ -2767,7 +2949,7 @@
                         body: JSON.stringify({ q_ids: qIds, mssv: 'flashcard' })
                     });
                     var ansMap = await ansRes.json();
-                    fcState.cards = qs.map(function (q) { return { q: q.q, options: q.options, ansIdx: ansMap[q.q_id], q_id: q.q_id }; });
+                    fcState.cards = qs.map(function (q) { return { q: q.q, options: q.options, ansIdx: ansMap[q.q_id], q_id: q.q_id, type: q.type || 'multiple_choice' }; });
                     fcState.cards.sort(function () { return 0.5 - Math.random(); });
                     fcState.cur = 0; fcState.seen = new Set(); fcState.known = new Set();
                     renderFC();
@@ -2817,7 +2999,17 @@
                 fcState.seen.add(fcState.cur);
                 document.getElementById('fc-card').classList.remove('flipped');
                 document.getElementById('fc-question').textContent = c.q;
-                var ansText = (c.ansIdx !== undefined && c.options[c.ansIdx]) ? c.options[c.ansIdx] : 'N/A';
+                var ansText = 'N/A';
+                if (c.type === 'short_answer') {
+                    // For fill questions, ansIdx is {type: 'short_answer', ans: '...'} or a string
+                    if (c.ansIdx && typeof c.ansIdx === 'object' && c.ansIdx.ans) {
+                        ansText = c.ansIdx.ans;
+                    } else if (typeof c.ansIdx === 'string') {
+                        ansText = c.ansIdx;
+                    }
+                } else {
+                    ansText = (c.ansIdx !== undefined && c.options[c.ansIdx]) ? c.options[c.ansIdx] : 'N/A';
+                }
                 document.getElementById('fc-answer').textContent = ansText;
                 document.getElementById('fc-current').textContent = fcState.cur + 1;
                 document.getElementById('fc-total').textContent = fcState.cards.length;
@@ -2899,14 +3091,45 @@
 
                 var optBox = document.getElementById('prac-options');
                 optBox.innerHTML = '';
-                var letters = ['A', 'B', 'C', 'D', 'E'];
-                q.options.forEach(function (o, i) {
-                    var d = document.createElement('div');
-                    d.className = 'practice-opt'; d.dataset.idx = i;
-                    d.innerHTML = '<div class="opt-letter">' + (letters[i] || (i + 1)) + '</div><span style="font-size:.95rem">' + o + '</span>';
-                    d.onclick = function () { practiceSelect(i); };
-                    optBox.appendChild(d);
-                });
+                var isFill = q.type === 'short_answer';
+
+                if (isFill) {
+                    // Fill question in practice mode
+                    var hintDiv = document.createElement('div');
+                    hintDiv.className = 'fill-hint';
+                    hintDiv.innerHTML = '✏️ <span>CÂU HỎI ĐIỀN — Nhập câu trả lời rồi nhấn "Xem đáp án"</span>';
+                    optBox.appendChild(hintDiv);
+
+                    var badge = document.createElement('span');
+                    badge.className = 'fill-badge mb-3';
+                    badge.innerHTML = '📝 FILL QUESTION';
+                    optBox.appendChild(badge);
+
+                    var ta = document.createElement('textarea');
+                    ta.id = 'prac-fill-input';
+                    ta.className = 'fill-answer-area mt-3';
+                    ta.placeholder = 'Nhập câu trả lời của bạn tại đây...';
+                    ta.rows = 5;
+                    optBox.appendChild(ta);
+
+                    var submitBtn = document.createElement('button');
+                    submitBtn.className = 'btn-primary cyber-font font-bold text-sm mt-4';
+                    submitBtn.style.cssText = 'display:block;width:100%;padding:14px;';
+                    submitBtn.textContent = '👁 XEM ĐÁP ÁN';
+                    submitBtn.onclick = function() { practiceSubmitFill(); };
+                    optBox.appendChild(submitBtn);
+
+                    setTimeout(function() { ta.focus(); }, 100);
+                } else {
+                    var letters = ['A', 'B', 'C', 'D', 'E'];
+                    q.options.forEach(function (o, i) {
+                        var d = document.createElement('div');
+                        d.className = 'practice-opt'; d.dataset.idx = i;
+                        d.innerHTML = '<div class="opt-letter">' + (letters[i] || (i + 1)) + '</div><span style="font-size:.95rem">' + o + '</span>';
+                        d.onclick = function () { practiceSelect(i); };
+                        optBox.appendChild(d);
+                    });
+                }
             }
 
             function practiceSelect(idx) {
@@ -2955,6 +3178,52 @@
                     : '<span style="color:var(--neon-red);font-weight:700">✗ Sai!</span> <span style="color:var(--text-muted);margin-left:8px">Đáp án đúng: <span style="color:var(--accent-1)">' + correctText + '</span></span>';
             }
 
+            function practiceSubmitFill() {
+                if (pracState.answered) return;
+                pracState.answered = true;
+                var q = pracState.qs[pracState.cur];
+                var textarea = document.getElementById('prac-fill-input');
+                var userText = textarea ? textarea.value.trim() : '';
+                pracState.lastChoice = userText;
+                if (textarea) textarea.disabled = true;
+
+                // Get correct answer text
+                var ansData = q.ansIdx;
+                var correctText = '';
+                if (ansData && typeof ansData === 'object' && ansData.ans) {
+                    correctText = ansData.ans;
+                } else if (typeof ansData === 'string') {
+                    correctText = ansData;
+                } else {
+                    correctText = 'N/A';
+                }
+
+                // Show the correct answer in feedback area
+                var fb = document.getElementById('prac-feedback');
+                fb.classList.remove('hidden');
+                fb.style.background = 'rgba(255,170,0,.06)';
+                fb.style.border = '1px solid rgba(255,170,0,.2)';
+                fb.innerHTML = '<div style="margin-bottom:8px"><span class="fill-badge">📝 FILL — Tự đối chiếu</span></div>' +
+                    '<div style="margin-bottom:8px"><span class="text-xs uppercase font-bold" style="color:var(--text-muted)">Bạn trả lời:</span></div>' +
+                    '<div class="fill-user-answer" style="margin-bottom:12px">' + (userText || '<em style="color:var(--text-muted)">Không trả lời</em>') + '</div>' +
+                    '<div style="margin-bottom:8px"><span class="text-xs uppercase font-bold" style="color:var(--neon-green)">Đáp án tham khảo:</span></div>' +
+                    '<div class="fill-correct-answer">' + correctText + '</div>';
+
+                // Store result
+                pracState.results.push({
+                    q: q.q, options: q.options, userChoice: userText, correctChoice: correctText,
+                    isCorrect: null, q_id: q.q_id, isFill: true
+                });
+
+                // Hide submit button
+                var optBox = document.getElementById('prac-options');
+                var submitBtn = optBox.querySelector('button');
+                if (submitBtn) submitBtn.style.display = 'none';
+
+                document.getElementById('prac-next-btn').classList.remove('hidden');
+                document.getElementById('prac-explain-btn').classList.remove('hidden');
+            }
+
             window.practiceNext = function () {
                 pracState.cur++;
                 renderPractice();
@@ -2970,15 +3239,29 @@
                 // Build summary review
                 var reviewHtml = '';
                 pracState.results.forEach(function (r, i) {
-                    var userAns = r.userChoice >= 0 ? r.options[r.userChoice] : 'Bỏ trống';
-                    var correctAns = r.options[r.correctChoice] || 'N/A';
-                    reviewHtml += '<div class="review-card ' + (r.isCorrect ? 'correct' : 'wrong') + '">' +
-                        '<p class="font-bold text-sm mb-1">' + (i + 1) + '. ' + r.q + '</p>' +
-                        '<p class="text-xs" style="color:' + (r.isCorrect ? 'var(--neon-green)' : 'var(--neon-red)') + '">▸ ' + userAns + '</p>' +
-                        (!r.isCorrect ? '<p class="text-xs italic" style="color:var(--accent-1)">▸ Đúng: ' + correctAns + '</p>' : '') +
-                        '<div class="mt-2"><button class="btn-ai-explain" onclick="explainPracSummary(' + i + ')">🤖 Explain</button></div>' +
-                        '<div id="prac-sum-explain-' + i + '"></div>' +
-                        '</div>';
+                    if (r.isFill) {
+                        // Fill question review card
+                        reviewHtml += '<div class="review-card" style="border-left:3px solid var(--neon-yellow)">' +
+                            '<div class="flex items-center gap-2 mb-2"><span class="fill-badge">📝 FILL</span></div>' +
+                            '<p class="font-bold text-sm mb-2">' + (i + 1) + '. ' + r.q + '</p>' +
+                            '<div class="mb-2"><span class="text-xs uppercase font-bold" style="color:var(--text-muted)">Bạn trả lời:</span></div>' +
+                            '<div class="fill-user-answer mb-2">' + (r.userChoice || '<em>Không trả lời</em>') + '</div>' +
+                            '<div class="mb-2"><span class="text-xs uppercase font-bold" style="color:var(--neon-green)">Đáp án:</span></div>' +
+                            '<div class="fill-correct-answer">' + r.correctChoice + '</div>' +
+                            '<div class="mt-2"><button class="btn-ai-explain" onclick="explainPracSummary(' + i + ')">🤖 Explain</button></div>' +
+                            '<div id="prac-sum-explain-' + i + '"></div>' +
+                            '</div>';
+                    } else {
+                        var userAns = r.userChoice >= 0 ? r.options[r.userChoice] : 'Bỏ trống';
+                        var correctAns = r.options[r.correctChoice] || 'N/A';
+                        reviewHtml += '<div class="review-card ' + (r.isCorrect ? 'correct' : 'wrong') + '">' +
+                            '<p class="font-bold text-sm mb-1">' + (i + 1) + '. ' + r.q + '</p>' +
+                            '<p class="text-xs" style="color:' + (r.isCorrect ? 'var(--neon-green)' : 'var(--neon-red)') + '">▸ ' + userAns + '</p>' +
+                            (!r.isCorrect ? '<p class="text-xs italic" style="color:var(--accent-1)">▸ Đúng: ' + correctAns + '</p>' : '') +
+                            '<div class="mt-2"><button class="btn-ai-explain" onclick="explainPracSummary(' + i + ')">🤖 Explain</button></div>' +
+                            '<div id="prac-sum-explain-' + i + '"></div>' +
+                            '</div>';
+                    }
                 });
                 document.getElementById('prac-summary-review').innerHTML = reviewHtml;
 
@@ -3363,12 +3646,17 @@
 
                 var letters = ['A', 'B', 'C', 'D', 'E'];
                 tbody.innerHTML = questions.map(function (q, i) {
-                    var ansLetter = q.answer !== undefined ? (letters[q.answer] || q.answer) : '?';
+                    var ansDisplay = '';
+                    if (q.type === 'short_answer') {
+                        ansDisplay = '<span class="fill-badge" style="font-size:0.6rem;padding:2px 8px;">FILL</span>';
+                    } else {
+                        ansDisplay = '<span style="color:var(--neon-green);font-weight:700">' + (q.answer !== undefined ? (letters[q.answer] || q.answer) : '?') + '</span>';
+                    }
                     return '<tr>' +
                         '<td>' + (i + 1) + '</td>' +
                         '<td title="' + (q.q || '').replace(/"/g, '&quot;') + '">' + (q.q || '') + '</td>' +
                         '<td><span class="tag-chip" style="background:var(--bg-card);color:var(--accent-1);border:1px solid var(--border-primary)">' + formatSubjectName(q.subject || '') + '</span></td>' +
-                        '<td style="color:var(--neon-green);font-weight:700">' + ansLetter + '</td>' +
+                        '<td>' + ansDisplay + '</td>' +
                         '<td><div class="flex gap-2">' +
                         '<button onclick="editAdminQuestion(\'' + (q.id || q._id || q.q_id || '') + '\')" class="text-xs px-2 py-1 rounded" style="border:1px solid var(--accent-1);color:var(--accent-1);background:transparent;cursor:pointer;">✏️</button>' +
                         '<button onclick="deleteAdminQuestion(\'' + (q.id || q._id || q.q_id || '') + '\')" class="text-xs px-2 py-1 rounded" style="border:1px solid var(--neon-red);color:var(--neon-red);background:transparent;cursor:pointer;">🗑️</button>' +
@@ -3377,12 +3665,23 @@
                 }).join('');
             }
 
+            window.toggleModalType = function () {
+                var type = document.getElementById('modal-type').value;
+                var isFill = type === 'short_answer';
+                document.getElementById('modal-options-group').style.display = isFill ? 'none' : 'block';
+                document.getElementById('modal-answer-group').style.display = isFill ? 'none' : 'block';
+                document.getElementById('modal-ans-text-group').classList.toggle('hidden', !isFill);
+            };
+
             window.openAddModal = function () {
                 document.getElementById('modal-title').textContent = 'Thêm câu hỏi';
                 document.getElementById('modal-q').value = '';
                 document.getElementById('modal-options').value = '';
                 document.getElementById('modal-answer').value = '0';
+                document.getElementById('modal-ans-text').value = '';
+                document.getElementById('modal-type').value = 'multiple_choice';
                 document.getElementById('modal-edit-id').value = '';
+                window.toggleModalType();
                 document.getElementById('admin-modal').classList.remove('hidden');
             };
 
@@ -3400,6 +3699,11 @@
                     document.getElementById('modal-answer').value = q.answer !== undefined ? q.answer : 0;
                     document.getElementById('modal-subject').value = q.subject || '';
                     document.getElementById('modal-edit-id').value = id;
+                    // Set type and fill answer
+                    var qType = q.type || 'multiple_choice';
+                    document.getElementById('modal-type').value = qType;
+                    document.getElementById('modal-ans-text').value = q.ans_text || '';
+                    window.toggleModalType();
                     document.getElementById('admin-modal').classList.remove('hidden');
                 } catch (e) { alert('Lỗi: ' + e.message); }
             };
@@ -3420,23 +3724,31 @@
 
             window.saveAdminQuestion = async function () {
                 var q = document.getElementById('modal-q').value.trim();
-                var optionsText = document.getElementById('modal-options').value.trim();
-                var answer = parseInt(document.getElementById('modal-answer').value);
+                var qType = document.getElementById('modal-type').value;
                 var subject = document.getElementById('modal-subject').value;
                 var editId = document.getElementById('modal-edit-id').value;
 
-                if (!q || !optionsText) return alert('Hãy nhập câu hỏi và các lựa chọn!');
-
-                var options = optionsText.split('\n').map(function (o) { return o.trim(); }).filter(function (o) { return o.length > 0; });
-                if (options.length < 2) return alert('Cần ít nhất 2 lựa chọn!');
+                if (!q) return alert('Hãy nhập câu hỏi!');
 
                 var payload = {
                     q: q,
-                    options: options,
-                    answer: answer,
                     subject: subject,
-                    admin_key: ADMIN_KEY
+                    admin_key: ADMIN_KEY,
+                    type: qType
                 };
+
+                if (qType === 'short_answer') {
+                    payload.ans = document.getElementById('modal-ans-text').value.trim();
+                    payload.options = [];
+                    if (!payload.ans) return alert('Hãy nhập đáp án cho câu hỏi điền!');
+                } else {
+                    var optionsText = document.getElementById('modal-options').value.trim();
+                    if (!optionsText) return alert('Hãy nhập các lựa chọn!');
+                    var options = optionsText.split('\n').map(function (o) { return o.trim(); }).filter(function (o) { return o.length > 0; });
+                    if (options.length < 2) return alert('Cần ít nhất 2 lựa chọn!');
+                    payload.options = options;
+                    payload.answer = parseInt(document.getElementById('modal-answer').value);
+                }
 
                 try {
                     if (editId) {
@@ -3641,15 +3953,15 @@
                 // Apply saved theme
                 applyTheme(currentThemeIdx);
 
+                // Show home section immediately (don't wait for API)
+                window.showSection('home');
+
                 // Init visual effects
                 initMatrix();
                 initParticles();
 
-                // Load subjects from API
+                // Load subjects from API (non-blocking for UI)
                 await loadSubjects();
-
-                // Show home section
-                window.showSection('home');
 
                 liveLog('System initialized — UET NET MASTER v4.0', 'ok');
             };

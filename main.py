@@ -88,7 +88,8 @@ def question_helper(q) -> dict:
             q.get("q_id", q["_id"])
         ),  # Ưu tiên lấy q_id nếu có, không thì lấy _id
         "q": q["q"],
-        "options": q["options"],
+        "options": q.get("options", []),
+        "type": q.get("type", "multiple_choice"),  # short_answer or multiple_choice
     }
 
 
@@ -143,8 +144,11 @@ async def get_answers(data: dict = Body(...)):
                     continue
 
             if q:
-                # Lấy đáp án từ trường 'answer' hoặc 'ans'
-                answers[q_id] = q.get("answer", q.get("ans"))
+                # Lấy đáp án: text cho short_answer, index cho multiple_choice
+                if q.get("type") == "short_answer":
+                    answers[q_id] = {"type": "short_answer", "ans": q.get("ans", "")}
+                else:
+                    answers[q_id] = q.get("answer", q.get("ans"))
         return answers
     except Exception as e:
         return {"error": str(e)}
@@ -338,6 +342,7 @@ async def admin_get_questions(
         cursor = db.questions.find(query_filter).limit(200)
         questions = []
         async for q in cursor:
+            q_type = q.get("type", "multiple_choice")
             questions.append({
                 "_id": str(q["_id"]),
                 "q_id": str(q.get("q_id", q["_id"])),
@@ -345,6 +350,8 @@ async def admin_get_questions(
                 "options": q.get("options", []),
                 "answer": q.get("answer", q.get("ans")),
                 "subject": q.get("subject", ""),
+                "type": q_type,
+                "ans_text": q.get("ans", "") if q_type == "short_answer" else "",
             })
         return questions
     except Exception as e:
@@ -357,8 +364,13 @@ async def admin_create_question(data: dict = Body(...)):
     verify_admin_key(data.get("admin_key", ""))
 
     # Kiểm tra các trường bắt buộc
-    if not data.get("q") or not data.get("options"):
-        raise HTTPException(status_code=400, detail="Thiếu nội dung câu hỏi hoặc đáp án!")
+    q_type = data.get("type", "multiple_choice")
+    if not data.get("q"):
+        raise HTTPException(status_code=400, detail="Thiếu nội dung câu hỏi!")
+    if q_type == "short_answer" and not data.get("ans"):
+        raise HTTPException(status_code=400, detail="Thiếu đáp án cho câu hỏi điền!")
+    if q_type != "short_answer" and not data.get("options"):
+        raise HTTPException(status_code=400, detail="Thiếu các lựa chọn cho câu trắc nghiệm!")
 
     try:
         # Tự sinh q_id theo format admin_{timestamp}
@@ -366,10 +378,15 @@ async def admin_create_question(data: dict = Body(...)):
         new_question = {
             "q_id": q_id,
             "q": data["q"],
-            "options": data["options"],
-            "answer": data.get("answer", 0),
+            "options": data.get("options", []),
             "subject": data.get("subject", "general"),
+            "type": q_type,
         }
+        if q_type == "short_answer":
+            new_question["ans"] = data.get("ans", "")  # Text answer
+        else:
+            new_question["answer"] = data.get("answer", 0)
+            new_question["options"] = data["options"]
         result = await db.questions.insert_one(new_question)
         return {
             "status": "success",
