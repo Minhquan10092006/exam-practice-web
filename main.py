@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, Body, Query
+import time
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -53,6 +54,9 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 if not GEMINI_API_KEY:
     raise RuntimeError("Thiếu GEMINI_API_KEY trong file .env!")
 client_gemini = genai.Client(api_key=GEMINI_API_KEY)
+
+# Khóa admin cố định để bảo vệ các endpoint quản trị
+ADMIN_KEY = "UET_MASTER"
 
 # --- PHẦN 2: CÔNG CỤ HỖ TRỢ (HELPERS) ---
 
@@ -198,21 +202,15 @@ async def submit_choice(data: dict = Body(...)):
         )
 
 
-# --- ĐẢM BẢO CẬU CHỦ CŨNG CÓ ĐIỂM CUỐI NÀY ĐỂ TRÁNH LỖI 404 KHI CÓ VI PHẠM ---
+# --- GHI NHẬN VI PHẠM & ĐÌNH CHỈ THÍ SINH (ĐÃ GỘP 2 HANDLER TRÙNG LẶP) ---
 @app.post("/api/security-breach")
 async def security_breach(data: dict = Body(...)):
+    """Ghi lại vết gian lận vào security_logs VÀ đánh dấu DISQUALIFIED trong results"""
     try:
+        # Bước 1: Lưu log vi phạm vào collection security_logs
         await db.security_logs.insert_one(data)
-        return {"status": "logged"}
-    except Exception as e:
-        return {"error": str(e)}
 
-
-@app.post("/api/security-breach")
-async def security_breach(data: dict = Body(...)):
-    """Ghi lại vết gian lận vào cơ sở dữ liệu để đình chỉ thi"""
-    try:
-        # Đánh dấu trạng thái DISQUALIFIED (Đình chỉ) trong DB
+        # Bước 2: Đánh dấu trạng thái DISQUALIFIED (Đình chỉ) trong results
         await db.results.insert_one(
             {
                 "user": data.get("user", "Unknown"),
@@ -224,9 +222,243 @@ async def security_breach(data: dict = Body(...)):
         print(
             f"🚨 CẢNH BÁO: Thí sinh {data.get('user')} đã bị đình chỉ do {data.get('reason')}"
         )
-        return {"status": "Reported"}
+        return {"status": "logged_and_disqualified"}
     except Exception as e:
         return {"error": str(e)}
+
+
+@app.get("/api/dashboard/{mssv}")
+async def get_dashboard_stats(mssv: str):
+    """Lấy thống kê tổng hợp cho Dashboard của sinh viên"""
+    try:
+        # Đếm số bài thi đã hoàn thành
+        quiz_count = await db.results.count_documents({"mssv": mssv, "status": "COMPLETED"})
+
+        # Lấy lịch sử điểm gần đây
+        cursor = db.results.find({"mssv": mssv}).sort("timestamp", -1).limit(20)
+        history = []
+        async for r in cursor:
+            history.append({
+                "status": r.get("status", ""),
+                "timestamp": r.get("timestamp", ""),
+                "score": r.get("score", ""),
+            })
+
+        return {
+            "quiz_count": quiz_count,
+            "history": history,
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+
+# --- PHẦN 4: API MỚI — DANH SÁCH MÔN HỌC & GIẢI THÍCH AI ---
+
+
+@app.get("/api/subjects")
+async def get_subjects():
+    """Lấy danh sách các môn học có trong ngân hàng câu hỏi"""
+    try:
+        subjects = await db.questions.distinct("subject")
+        return subjects
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/explain")
+async def explain_answer(data: dict = Body(...)):
+    """Gọi Gemini AI giải thích đáp án bằng tiếng Việt"""
+    question = data.get("question", "")
+    options = data.get("options", [])
+    correct_answer = data.get("correct_answer", "")
+    user_answer = data.get("user_answer", "")
+
+    if not question:
+        raise HTTPException(status_code=400, detail="Thiếu nội dung câu hỏi!")
+
+    try:
+        # Tạo prompt yêu cầu Gemini giải thích chi tiết bằng tiếng Việt
+        options_text = "\n".join(
+            [f"  {i+1}. {opt}" for i, opt in enumerate(options)]
+        )
+        prompt = (
+            f"Hãy giải thích câu hỏi trắc nghiệm sau bằng tiếng Việt:\n\n"
+            f"Câu hỏi: {question}\n"
+            f"Các đáp án:\n{options_text}\n"
+            f"Đáp án đúng: {correct_answer}\n"
+            f"Đáp án người dùng chọn: {user_answer}\n\n"
+            f"Yêu cầu:\n"
+            f"1. Giải thích tại sao đáp án đúng là đúng.\n"
+            f"2. Nếu đáp án người dùng chọn khác đáp án đúng, giải thích tại sao nó sai.\n"
+            f"3. Đưa ra một mẹo ghi nhớ ngắn gọn để nhớ kiến thức này.\n"
+        )
+
+        response = client_gemini.models.generate_content(
+            model="gemini-3.1-flash-lite-preview", contents=prompt
+        )
+        return {"explanation": response.text}
+    except Exception as e:
+        print(f"Lỗi Gemini AI (explain): {e}")
+        raise HTTPException(
+            status_code=500,
+            detail="Gemini AI đang gặp sự cố, cậu chủ thử lại sau nhé!",
+        )
+
+
+# --- PHẦN 5: API QUẢN TRỊ (ADMIN ENDPOINTS) ---
+
+
+def verify_admin_key(admin_key: str):
+    """Kiểm tra khóa admin, ném lỗi 403 nếu sai"""
+    if admin_key != ADMIN_KEY:
+        raise HTTPException(status_code=403, detail="Sai khóa admin! Truy cập bị từ chối.")
+
+
+@app.get("/api/admin/questions")
+async def admin_get_questions(
+    subject: str = Query(None, description="Lọc theo môn học"),
+    search: str = Query(None, description="Tìm kiếm trong nội dung câu hỏi"),
+):
+    """Lấy danh sách câu hỏi cho trang quản trị (có lọc & tìm kiếm)"""
+    try:
+        query_filter = {}
+        if subject:
+            query_filter["subject"] = subject
+        if search:
+            # Tìm kiếm regex không phân biệt hoa thường trong nội dung câu hỏi
+            query_filter["q"] = {"$regex": search, "$options": "i"}
+
+        cursor = db.questions.find(query_filter).limit(200)
+        questions = []
+        async for q in cursor:
+            questions.append({
+                "_id": str(q["_id"]),
+                "q_id": str(q.get("q_id", q["_id"])),
+                "q": q.get("q", ""),
+                "options": q.get("options", []),
+                "answer": q.get("answer", q.get("ans")),
+                "subject": q.get("subject", ""),
+            })
+        return questions
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/admin/question")
+async def admin_create_question(data: dict = Body(...)):
+    """Thêm câu hỏi mới vào ngân hàng đề (yêu cầu admin_key)"""
+    verify_admin_key(data.get("admin_key", ""))
+
+    # Kiểm tra các trường bắt buộc
+    if not data.get("q") or not data.get("options"):
+        raise HTTPException(status_code=400, detail="Thiếu nội dung câu hỏi hoặc đáp án!")
+
+    try:
+        # Tự sinh q_id theo format admin_{timestamp}
+        q_id = f"admin_{int(time.time())}"
+        new_question = {
+            "q_id": q_id,
+            "q": data["q"],
+            "options": data["options"],
+            "answer": data.get("answer", 0),
+            "subject": data.get("subject", "general"),
+        }
+        result = await db.questions.insert_one(new_question)
+        return {
+            "status": "success",
+            "q_id": q_id,
+            "_id": str(result.inserted_id),
+            "message": "Đã thêm câu hỏi mới thành công!",
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.put("/api/admin/question/{question_id}")
+async def admin_update_question(question_id: str, data: dict = Body(...)):
+    """Cập nhật câu hỏi theo _id hoặc q_id (yêu cầu admin_key)"""
+    verify_admin_key(data.get("admin_key", ""))
+
+    try:
+        # Loại bỏ admin_key khỏi dữ liệu cập nhật
+        update_data = {k: v for k, v in data.items() if k != "admin_key"}
+        if not update_data:
+            raise HTTPException(status_code=400, detail="Không có dữ liệu để cập nhật!")
+
+        # Thử tìm theo ObjectId trước, nếu không hợp lệ thì tìm theo q_id
+        result = None
+        try:
+            result = await db.questions.update_one(
+                {"_id": ObjectId(question_id)}, {"$set": update_data}
+            )
+        except bson.errors.InvalidId:
+            result = await db.questions.update_one(
+                {"q_id": question_id}, {"$set": update_data}
+            )
+
+        if result.matched_count == 0:
+            raise HTTPException(status_code=404, detail="Không tìm thấy câu hỏi!")
+
+        return {"status": "success", "message": "Đã cập nhật câu hỏi thành công!"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.delete("/api/admin/question/{question_id}")
+async def admin_delete_question(question_id: str, data: dict = Body(...)):
+    """Xóa câu hỏi theo _id hoặc q_id (yêu cầu admin_key)"""
+    verify_admin_key(data.get("admin_key", ""))
+
+    try:
+        # Thử xóa theo ObjectId trước, nếu không hợp lệ thì xóa theo q_id
+        result = None
+        try:
+            result = await db.questions.delete_one({"_id": ObjectId(question_id)})
+        except bson.errors.InvalidId:
+            result = await db.questions.delete_one({"q_id": question_id})
+
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Không tìm thấy câu hỏi để xóa!")
+
+        return {"status": "success", "message": "Đã xóa câu hỏi thành công!"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/admin/subjects")
+async def admin_create_subject(data: dict = Body(...)):
+    """Tạo môn học mới bằng cách thêm câu hỏi placeholder (yêu cầu admin_key)"""
+    verify_admin_key(data.get("admin_key", ""))
+
+    subject_name = data.get("name", "").strip()
+    if not subject_name:
+        raise HTTPException(status_code=400, detail="Thiếu tên môn học!")
+
+    try:
+        # Kiểm tra xem môn học đã tồn tại chưa
+        existing = await db.questions.find_one({"subject": subject_name})
+        if existing:
+            return {"status": "exists", "message": f"Môn '{subject_name}' đã tồn tại!"}
+
+        # Tạo câu hỏi placeholder để đăng ký môn học mới
+        placeholder = {
+            "q_id": f"placeholder_{subject_name}_{int(time.time())}",
+            "q": f"[Placeholder] Câu hỏi mẫu cho môn {subject_name}",
+            "options": ["A", "B", "C", "D"],
+            "answer": 0,
+            "subject": subject_name,
+        }
+        await db.questions.insert_one(placeholder)
+        return {
+            "status": "success",
+            "message": f"Đã tạo môn học '{subject_name}' thành công!",
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 if __name__ == "__main__":

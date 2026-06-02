@@ -4,41 +4,239 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UET NETWORK MASTER - [CYBERPUNK v3.0 + AI GUARD]</title>
+    <title>UET NET MASTER — [CYBERPUNK v4.0 + AI GUARD]</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;900&family=Chakra+Petch:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&family=Be+Vietnam+Pro:wght@400;700;900&display=swap');
-
+        /* ================================================================
+           SECTION 1: CSS CUSTOM PROPERTIES & THEME ENGINE
+           ================================================================ */
         :root {
+            /* === CYBERPUNK NEON THEME (Default) === */
+            --bg-primary: #020205;
+            --bg-secondary: #0a0a1a;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --bg-card-hover: rgba(0, 242, 255, 0.06);
+            --bg-nav: rgba(0, 0, 0, 0.85);
+            --border-primary: rgba(0, 242, 255, 0.15);
+            --border-secondary: rgba(255, 255, 255, 0.06);
+            --border-accent: rgba(0, 242, 255, 0.3);
+            --text-primary: #ffffff;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
             --neon-blue: #00f2ff;
             --neon-pink: #ff00ff;
             --neon-green: #00ff88;
             --neon-red: #ff3333;
+            --neon-yellow: #ffaa00;
+            --neon-orange: #ff8800;
+            --accent-1: #00f2ff;
+            --accent-2: #ff00ff;
+            --accent-3: #00ff88;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(0, 242, 255, 0.15);
+            --glass-shadow: rgba(0, 242, 255, 0.05);
+            --scrollbar-color: #00f2ff;
+            --matrix-color: #0ff;
+            --scanline-opacity: 0.025;
+            --gradient-1: linear-gradient(135deg, #00f2ff, #ff00ff);
+            --gradient-2: linear-gradient(90deg, #00f2ff, #ff00ff);
+            --gradient-border: linear-gradient(135deg, rgba(0, 242, 255, 0.4), rgba(255, 0, 255, 0.4));
+            --particle-color: rgba(0, 242, 255, 0.3);
+        }
+
+        /* === SLEEK MIDNIGHT THEME === */
+        [data-theme="midnight"] {
+            --bg-primary: #0b0d17;
+            --bg-secondary: #111427;
+            --bg-card: rgba(17, 20, 39, 0.8);
+            --bg-card-hover: rgba(56, 97, 251, 0.08);
+            --bg-nav: rgba(11, 13, 23, 0.92);
+            --border-primary: rgba(56, 97, 251, 0.2);
+            --border-secondary: rgba(255, 255, 255, 0.05);
+            --border-accent: rgba(56, 97, 251, 0.4);
+            --accent-1: #3861fb;
+            --accent-2: #7c5cfc;
+            --accent-3: #00d4aa;
+            --glass-bg: rgba(17, 20, 39, 0.7);
+            --glass-border: rgba(56, 97, 251, 0.2);
+            --glass-shadow: rgba(56, 97, 251, 0.08);
+            --scrollbar-color: #3861fb;
+            --matrix-color: #3861fb;
+            --scanline-opacity: 0.01;
+            --gradient-1: linear-gradient(135deg, #3861fb, #7c5cfc);
+            --gradient-2: linear-gradient(90deg, #3861fb, #7c5cfc);
+            --gradient-border: linear-gradient(135deg, rgba(56, 97, 251, 0.4), rgba(124, 92, 252, 0.4));
+            --particle-color: rgba(56, 97, 251, 0.25);
+            --neon-blue: #3861fb;
+            --neon-pink: #7c5cfc;
+            --neon-green: #00d4aa;
+        }
+
+        /* === HACKER CONSOLE THEME === */
+        [data-theme="hacker"] {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-card: rgba(0, 255, 0, 0.02);
+            --bg-card-hover: rgba(0, 255, 0, 0.06);
+            --bg-nav: rgba(10, 10, 10, 0.95);
+            --border-primary: rgba(0, 255, 0, 0.15);
+            --border-secondary: rgba(0, 255, 0, 0.06);
+            --border-accent: rgba(0, 255, 0, 0.3);
+            --text-primary: #00ff00;
+            --text-secondary: #00cc00;
+            --text-muted: #008800;
+            --accent-1: #00ff00;
+            --accent-2: #00cc00;
+            --accent-3: #33ff33;
+            --glass-bg: rgba(0, 20, 0, 0.6);
+            --glass-border: rgba(0, 255, 0, 0.15);
+            --glass-shadow: rgba(0, 255, 0, 0.08);
+            --scrollbar-color: #00ff00;
+            --matrix-color: #0f0;
+            --scanline-opacity: 0.04;
+            --gradient-1: linear-gradient(135deg, #00ff00, #00cc00);
+            --gradient-2: linear-gradient(90deg, #00ff00, #33ff33);
+            --gradient-border: linear-gradient(135deg, rgba(0, 255, 0, 0.3), rgba(0, 204, 0, 0.3));
+            --particle-color: rgba(0, 255, 0, 0.2);
+            --neon-blue: #00ff00;
+            --neon-pink: #00cc00;
+            --neon-green: #33ff33;
+            --neon-red: #ff3333;
+            --neon-yellow: #ffff00;
+        }
+
+        /* ================================================================
+           SECTION 2: BASE STYLES
+           ================================================================ */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
             font-family: 'Be Vietnam Pro', sans-serif;
-            background-color: #020205;
-            color: #fff;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
             overflow-x: hidden;
+            min-height: 100vh;
+            transition: background-color 0.5s ease, color 0.5s ease;
         }
 
         .cyber-font {
             font-family: 'Chakra Petch', sans-serif;
         }
 
-        .border-neon {
-            border: 1px solid var(--neon-blue);
-            box-shadow: 0 0 10px rgba(0, 242, 255, 0.3);
+        .mono-font {
+            font-family: 'JetBrains Mono', monospace;
         }
 
+        /* ================================================================
+           SECTION 3: SCROLLBAR
+           ================================================================ */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-color);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            opacity: 0.8;
+        }
+
+        /* ================================================================
+           SECTION 4: CANVAS & BACKGROUND EFFECTS
+           ================================================================ */
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -2;
+            opacity: 0.06;
+            pointer-events: none;
+        }
+
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Scanline overlay */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px,
+                    rgba(0, 0, 0, var(--scanline-opacity)) 2px,
+                    rgba(0, 0, 0, var(--scanline-opacity)) 4px);
+            pointer-events: none;
+            z-index: 9998;
+        }
+
+        /* ================================================================
+           SECTION 5: GLASSMORPHISM & CARDS
+           ================================================================ */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 0 40px var(--glass-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+        }
+
+        .glass-card:hover {
+            box-shadow: 0 0 60px var(--glass-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
+
+        .gradient-border {
+            position: relative;
+            border: none;
+        }
+
+        .gradient-border::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: var(--gradient-border);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        /* ================================================================
+           SECTION 6: NEON EFFECTS
+           ================================================================ */
         .glow-text-blue {
-            text-shadow: 0 0 8px var(--neon-blue);
+            text-shadow: 0 0 8px var(--accent-1), 0 0 20px rgba(0, 242, 255, 0.2);
         }
 
         .glow-text-pink {
-            text-shadow: 0 0 8px var(--neon-pink);
+            text-shadow: 0 0 8px var(--accent-2);
         }
 
         .glow-text-green {
@@ -49,184 +247,288 @@
             text-shadow: 0 0 8px var(--neon-red);
         }
 
+        .border-neon {
+            border: 1px solid var(--accent-1);
+            box-shadow: 0 0 10px rgba(0, 242, 255, 0.15);
+        }
+
+        .neon-glow {
+            box-shadow: 0 0 15px var(--glass-shadow),
+                0 0 30px rgba(0, 242, 255, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        /* ================================================================
+           SECTION 7: BUTTONS
+           ================================================================ */
         .btn-cyber {
             position: relative;
             overflow: hidden;
-            transition: 0.3s;
-            border: 1px solid var(--neon-blue);
-            color: var(--neon-blue);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--accent-1);
+            color: var(--accent-1);
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .btn-cyber::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: var(--accent-1);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.5s ease, height 0.5s ease;
+            z-index: -1;
         }
 
         .btn-cyber:hover {
-            background: var(--neon-blue);
+            background: var(--accent-1);
             color: #000;
-            box-shadow: 0 0 20px var(--neon-blue);
+            box-shadow: 0 0 25px var(--accent-1), 0 0 50px rgba(0, 242, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .btn-cyber:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: var(--accent-1);
+            color: #000;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            padding: 12px 24px;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 25px var(--accent-1);
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            border: 1px solid var(--neon-red);
+            color: var(--neon-red);
+            background: rgba(255, 51, 51, 0.05);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            padding: 8px 16px;
+        }
+
+        .btn-danger:hover {
+            background: var(--neon-red);
+            color: #000;
+            box-shadow: 0 0 20px var(--neon-red);
+        }
+
+        /* ================================================================
+           SECTION 8: INPUTS
+           ================================================================ */
+        .cyber-input {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-primary);
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: var(--text-primary);
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: .9rem;
+            outline: none;
+            transition: border-color .3s ease, box-shadow .3s ease;
+            width: 100%;
+        }
+
+        .cyber-input:focus {
+            border-color: var(--accent-1);
+            box-shadow: 0 0 15px var(--glass-shadow);
+        }
+
+        .cyber-input:-webkit-autofill,
+        .cyber-input:-webkit-autofill:hover,
+        .cyber-input:-webkit-autofill:focus,
+        .cyber-input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 1000px #000 inset, 0 0 15px var(--glass-shadow) !important;
+            box-shadow: 0 0 0 1000px #000 inset, 0 0 15px var(--glass-shadow) !important;
+            -webkit-text-fill-color: #fff !important;
+            border-color: var(--border-accent) !important;
+            transition: background-color 9999s ease-in-out 0s;
+        }
+
+        .cyber-input option {
+            background: #0a0a0a;
+            color: #fff;
+        }
+
+        /* ================================================================
+           SECTION 9: NAVIGATION
+           ================================================================ */
+        .nav-btn {
+            position: relative;
+            padding-bottom: 4px;
+            transition: color .25s ease;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-family: 'Chakra Petch', sans-serif;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-1);
+            box-shadow: 0 0 6px var(--accent-1);
+            transition: width .3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-btn:hover {
+            color: var(--accent-1);
+        }
+
+        .nav-btn.nav-active {
+            color: var(--accent-1);
+        }
+
+        .nav-btn.nav-active::after {
+            width: 100%;
+        }
+
+        /* Theme toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border: 1px solid var(--border-primary);
+            border-radius: 8px;
+            background: var(--bg-card);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent-1);
+            color: var(--accent-1);
+        }
+
+        /* ================================================================
+           SECTION 10: SECTION TRANSITIONS
+           ================================================================ */
+        .app-section {
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity .4s cubic-bezier(0.4, 0, 0.2, 1), transform .4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .app-section.section-visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .hidden {
-            display: none;
+            display: none !important;
         }
 
-        #matrix-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: -1;
-            opacity: 0.08;
-        }
-
-        ::-webkit-scrollbar {
-            width: 5px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--neon-blue);
-            border-radius: 10px;
-        }
-
-        /* === THREAT LEVEL BAR === */
+        /* ================================================================
+           SECTION 11: THREAT BAR & SECURITY
+           ================================================================ */
         #threat-bar-wrap {
             height: 4px;
             background: #111;
             overflow: hidden;
+            position: relative;
         }
 
         #threat-bar {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, #00ff88, #ff3333);
-            transition: width 0.5s, background 0.5s;
+            background: linear-gradient(90deg, var(--neon-green), var(--neon-red));
+            transition: width 0.5s ease, background 0.5s ease;
+            animation: threatGlow 2s ease-in-out infinite;
         }
 
-        /* === LIVE FEED LOG === */
+        @keyframes threatGlow {
+
+            0%,
+            100% {
+                filter: brightness(1);
+            }
+
+            50% {
+                filter: brightness(1.4);
+            }
+        }
+
+        /* ================================================================
+           SECTION 12: LIVE SECURITY FEED
+           ================================================================ */
         #live-log {
             position: fixed;
             bottom: 12px;
             right: 12px;
-            width: 280px;
-            max-height: 160px;
+            width: 300px;
+            max-height: 180px;
             overflow-y: auto;
-            background: rgba(0, 0, 0, 0.85);
-            border: 1px solid #1a2a2a;
-            border-radius: 8px;
-            padding: 8px;
-            font-family: 'Chakra Petch', monospace;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid var(--border-secondary);
+            border-radius: 10px;
+            padding: 10px;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 10px;
-            color: #888;
+            color: var(--text-muted);
             z-index: 999;
+            backdrop-filter: blur(10px);
         }
 
         #live-log .log-entry {
-            padding: 2px 0;
-            border-bottom: 1px solid #111;
+            padding: 3px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            animation: logSlide 0.3s ease;
+        }
+
+        @keyframes logSlide {
+            from {
+                opacity: 0;
+                transform: translateX(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         #live-log .log-warn {
-            color: #ffaa00;
+            color: var(--neon-yellow);
         }
 
         #live-log .log-danger {
-            color: #ff4444;
+            color: var(--neon-red);
         }
 
         #live-log .log-ok {
-            color: #00ff88;
+            color: var(--neon-green);
         }
 
-        /* === AI REPORT SECTION === */
-        #ai-report-box {
-            background: linear-gradient(135deg, #0a0a1a, #050510);
-            border: 1px solid #00f2ff44;
-            border-radius: 12px;
-            padding: 20px;
-            margin: 16px 0;
-        }
-
-        #ai-verdict {
-            font-size: 1.5rem;
-            font-weight: 900;
-            font-family: 'Chakra Petch', sans-serif;
-            margin-bottom: 8px;
-        }
-
-        .verdict-clean {
-            color: #00ff88;
-            text-shadow: 0 0 10px #00ff88;
-        }
-
-        .verdict-suspect {
-            color: #ffaa00;
-            text-shadow: 0 0 10px #ffaa00;
-        }
-
-        .verdict-cheat {
-            color: #ff3333;
-            text-shadow: 0 0 10px #ff3333;
-        }
-
-        /* === STATS GRID === */
-        .stat-chip {
-            background: rgba(0, 242, 255, 0.05);
-            border: 1px solid rgba(0, 242, 255, 0.2);
-            border-radius: 8px;
-            padding: 10px 14px;
-            text-align: center;
-        }
-
-        .stat-chip .val {
-            font-size: 1.4rem;
-            font-weight: 900;
-            font-family: 'Chakra Petch', sans-serif;
-        }
-
-        /* Loading dots */
-        .dot-pulse::after {
-            content: '';
-            animation: dots 1.2s steps(3, end) infinite;
-        }
-
-        @keyframes dots {
-            0% {
-                content: '.';
-            }
-
-            33% {
-                content: '..';
-            }
-
-            66% {
-                content: '...';
-            }
-        }
-
-        /* Shake animation for warnings */
-        @keyframes shake {
-
-            0%,
-            100% {
-                transform: translateX(0);
-            }
-
-            25% {
-                transform: translateX(-8px);
-            }
-
-            75% {
-                transform: translateX(8px);
-            }
-        }
-
-        .shake {
-            animation: shake 0.3s ease;
-        }
-
-        /* Option selected highlight */
-        .opt-selected {
-            border-color: var(--neon-blue) !important;
-            background: rgba(0, 242, 255, 0.08) !important;
-        }
-
-        /* Glitch title */
+        /* ================================================================
+           SECTION 13: GLITCH TITLE
+           ================================================================ */
         .glitch {
             position: relative;
             display: inline-block;
@@ -242,13 +544,13 @@
         }
 
         .glitch::before {
-            color: var(--neon-pink);
+            color: var(--accent-2);
             animation: glitch1 4s infinite;
             clip-path: polygon(0 0, 100% 0, 100% 40%, 0 40%);
         }
 
         .glitch::after {
-            color: var(--neon-blue);
+            color: var(--accent-1);
             animation: glitch2 4s infinite;
             clip-path: polygon(0 60%, 100% 60%, 100% 100%, 0 100%);
         }
@@ -259,17 +561,17 @@
             94%,
             100% {
                 transform: translate(0);
-                opacity: 0
+                opacity: 0;
             }
 
             95% {
                 transform: translate(-3px, 1px);
-                opacity: .8
+                opacity: .8;
             }
 
             97% {
                 transform: translate(3px, -1px);
-                opacity: .8
+                opacity: .8;
             }
         }
 
@@ -279,49 +581,63 @@
             96%,
             100% {
                 transform: translate(0);
-                opacity: 0
+                opacity: 0;
             }
 
             97% {
                 transform: translate(3px, 2px);
-                opacity: .8
+                opacity: .8;
             }
 
             99% {
                 transform: translate(-3px, -2px);
-                opacity: .8
+                opacity: .8;
             }
         }
 
-        /* Glassmorphism login card */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 242, 255, 0.15);
-            border-radius: 20px;
-            padding: 32px;
-            box-shadow: 0 0 40px rgba(0, 242, 255, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-        }
-
-        /* Enhanced inputs */
-        .cyber-input {
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(0, 242, 255, 0.2);
-            border-radius: 8px;
+        /* ================================================================
+           SECTION 14: STAT CHIPS
+           ================================================================ */
+        .stat-chip {
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            border-radius: 12px;
             padding: 12px 16px;
-            color: #fff;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-chip:hover {
+            border-color: var(--accent-1);
+            box-shadow: 0 0 15px var(--glass-shadow);
+            transform: translateY(-2px);
+        }
+
+        .stat-chip .val {
+            font-size: 1.4rem;
+            font-weight: 900;
             font-family: 'Chakra Petch', sans-serif;
-            font-size: .9rem;
-            outline: none;
-            transition: border-color .3s, box-shadow .3s;
-            width: 100%;
         }
 
-        .cyber-input:focus {
-            border-color: var(--neon-blue);
-            box-shadow: 0 0 15px rgba(0, 242, 255, .2);
+        @keyframes chipPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 rgba(0, 242, 255, 0);
+            }
+
+            50% {
+                box-shadow: 0 0 14px var(--glass-shadow);
+            }
         }
 
+        .chip-pulse {
+            animation: chipPulse 2.5s ease-in-out infinite;
+        }
+
+        /* ================================================================
+           SECTION 15: QUIZ COMPONENTS
+           ================================================================ */
         /* Progress bar */
         #q-prog-wrap {
             height: 3px;
@@ -331,9 +647,9 @@
         #q-prog-fill {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
+            background: var(--gradient-2);
             transition: width .5s ease;
-            box-shadow: 0 0 8px var(--neon-blue);
+            box-shadow: 0 0 8px var(--accent-1);
         }
 
         /* Timer ring */
@@ -365,54 +681,73 @@
             align-items: center;
             gap: 14px;
             padding: 14px 18px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-secondary);
             border-radius: 12px;
             cursor: pointer;
-            transition: all .2s;
-            background: rgba(255, 255, 255, 0.02);
+            transition: all .25s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--bg-card);
             user-select: none;
         }
 
         .opt-btn:hover {
-            border-color: rgba(0, 242, 255, .4);
-            background: rgba(0, 242, 255, .04);
+            border-color: var(--border-accent);
+            background: var(--bg-card-hover);
             transform: translateX(4px);
         }
 
         .opt-btn.opt-selected {
-            border-color: var(--neon-blue) !important;
+            border-color: var(--accent-1) !important;
             background: rgba(0, 242, 255, .1) !important;
-            box-shadow: 0 0 20px rgba(0, 242, 255, .15);
+            box-shadow: 0 0 20px var(--glass-shadow);
             transform: translateX(4px);
         }
 
         .opt-letter {
-            width: 32px;
-            height: 32px;
+            width: 34px;
+            height: 34px;
             border-radius: 8px;
-            border: 1px solid rgba(0, 242, 255, .3);
+            border: 1px solid var(--border-accent);
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Chakra Petch', sans-serif;
             font-weight: 700;
             font-size: .85rem;
-            color: var(--neon-blue);
+            color: var(--accent-1);
             flex-shrink: 0;
-            transition: background .2s, color .2s;
+            transition: all .2s;
         }
 
         .opt-btn.opt-selected .opt-letter {
-            background: var(--neon-blue);
+            background: var(--accent-1);
             color: #000;
         }
 
-        /* Score ring */
+        /* Slide animation */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .q-slide {
+            animation: slideIn .3s ease forwards;
+        }
+
+        /* ================================================================
+           SECTION 16: SCORE RING
+           ================================================================ */
         .score-ring-wrap {
             position: relative;
-            width: 160px;
-            height: 160px;
-            margin: 0 auto 12px;
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 16px;
         }
 
         .score-ring-wrap svg {
@@ -428,14 +763,22 @@
             line-height: 1.2;
         }
 
-        /* Review cards */
+        /* ================================================================
+           SECTION 17: REVIEW CARDS
+           ================================================================ */
         .review-card {
-            background: rgba(255, 255, 255, .02);
-            border: 1px solid rgba(255, 255, 255, .06);
-            border-radius: 10px;
-            padding: 14px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-secondary);
+            border-radius: 12px;
+            padding: 16px 18px;
             margin-bottom: 10px;
             text-align: left;
+            transition: all 0.3s ease;
+        }
+
+        .review-card:hover {
+            border-color: var(--border-accent);
+            transform: translateX(2px);
         }
 
         .review-card.correct {
@@ -446,189 +789,711 @@
             border-left: 3px solid var(--neon-red);
         }
 
-        /* Slide-in question */
-        @keyframes slideIn {
+        /* ================================================================
+           SECTION 18: FLASHCARD
+           ================================================================ */
+        .flashcard-container {
+            perspective: 1000px;
+            width: 100%;
+            max-width: 580px;
+            height: 360px;
+            margin: 0 auto;
+            cursor: pointer;
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(.4, 0, .2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .flashcard-container.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 32px;
+            text-align: center;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(13, 21, 37, 1) 100%);
+            border: 1px solid var(--border-primary);
+        }
+
+        .flashcard-back {
+            background: linear-gradient(135deg, #0a1a10 0%, #0d2515 100%);
+            border: 1px solid rgba(0, 255, 136, .25);
+            transform: rotateY(180deg);
+        }
+
+        .fc-progress-dots {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .fc-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .08);
+            transition: all .2s;
+            cursor: pointer;
+        }
+
+        .fc-dot.active {
+            background: var(--accent-1);
+            box-shadow: 0 0 8px var(--accent-1);
+            transform: scale(1.3);
+        }
+
+        .fc-dot.seen {
+            background: rgba(0, 242, 255, .3);
+        }
+
+        .fc-nav-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            border: 1px solid var(--border-primary);
+            background: var(--bg-card);
+            color: var(--accent-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all .2s;
+            font-size: 1.2rem;
+        }
+
+        .fc-nav-btn:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--accent-1);
+            box-shadow: 0 0 12px var(--glass-shadow);
+        }
+
+        .fc-nav-btn:disabled {
+            opacity: .3;
+            cursor: not-allowed;
+        }
+
+        /* ================================================================
+           SECTION 19: PRACTICE MODE
+           ================================================================ */
+        .practice-opt {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            border: 1px solid var(--border-secondary);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all .25s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--bg-card);
+        }
+
+        .practice-opt:hover:not(.p-disabled) {
+            border-color: var(--border-accent);
+            background: var(--bg-card-hover);
+            transform: translateX(4px);
+        }
+
+        .practice-opt.p-correct {
+            border-color: var(--neon-green) !important;
+            background: rgba(0, 255, 136, .1) !important;
+        }
+
+        .practice-opt.p-wrong {
+            border-color: var(--neon-red) !important;
+            background: rgba(255, 51, 51, .1) !important;
+        }
+
+        .practice-opt.p-disabled {
+            cursor: default;
+            opacity: .7;
+        }
+
+        .practice-opt.p-answer {
+            border-color: var(--neon-green) !important;
+            box-shadow: 0 0 15px rgba(0, 255, 136, .15);
+        }
+
+        .p-streak-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: .75rem;
+            font-weight: 700;
+        }
+
+        /* ================================================================
+           SECTION 20: DASHBOARD
+           ================================================================ */
+        .dash-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-secondary);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .dash-card:hover {
+            border-color: var(--border-primary);
+            box-shadow: 0 0 20px var(--glass-shadow);
+        }
+
+        .dash-card h3 {
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: .75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent-1);
+            margin-bottom: 16px;
+            opacity: 0.6;
+        }
+
+        .dash-big-num {
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 3rem;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .dash-bar {
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, .05);
+            overflow: hidden;
+        }
+
+        .dash-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        .dash-history-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, .04);
+            font-size: .85rem;
+        }
+
+        .dash-history-row:last-child {
+            border-bottom: none;
+        }
+
+        .dash-mini-bar {
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, .05);
+            overflow: hidden;
+        }
+
+        .dash-mini-fill {
+            height: 100%;
+            border-radius: 3px;
+        }
+
+        /* Integrity Score (SVG radar) */
+        .integrity-wrap {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+        }
+
+        .integrity-score-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        /* ================================================================
+           SECTION 21: AI REPORT
+           ================================================================ */
+        #ai-report-box {
+            background: linear-gradient(135deg, var(--bg-secondary), rgba(5, 5, 16, 1));
+            border: 1px solid var(--border-primary);
+            border-radius: 14px;
+            padding: 24px;
+            margin: 16px 0;
+        }
+
+        #ai-verdict {
+            font-size: 1.5rem;
+            font-weight: 900;
+            font-family: 'Chakra Petch', sans-serif;
+            margin-bottom: 8px;
+        }
+
+        .verdict-clean {
+            color: var(--neon-green);
+            text-shadow: 0 0 10px var(--neon-green);
+        }
+
+        .verdict-suspect {
+            color: var(--neon-yellow);
+            text-shadow: 0 0 10px var(--neon-yellow);
+        }
+
+        .verdict-cheat {
+            color: var(--neon-red);
+            text-shadow: 0 0 10px var(--neon-red);
+        }
+
+        /* ================================================================
+           SECTION 22: ADMIN PANEL
+           ================================================================ */
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+
+        .admin-table th {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-accent);
+            font-family: 'Chakra Petch', sans-serif;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            color: var(--accent-1);
+        }
+
+        .admin-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border-secondary);
+            color: var(--text-secondary);
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .admin-table tr:hover td {
+            background: var(--bg-card-hover);
+        }
+
+        .admin-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .admin-modal {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-accent);
+            border-radius: 16px;
+            padding: 32px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateX(24px)
             }
 
             to {
                 opacity: 1;
-                transform: translateX(0)
             }
         }
 
-        .q-slide {
-            animation: slideIn .3s ease forwards;
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        /* Scanline overlay */
-        body::after {
+        /* ================================================================
+           SECTION 23: AI EXPLAIN BUTTON
+           ================================================================ */
+        .btn-ai-explain {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border: 1px solid var(--accent-2);
+            background: rgba(255, 0, 255, 0.05);
+            color: var(--accent-2);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Chakra Petch', sans-serif;
+        }
+
+        .btn-ai-explain:hover {
+            background: var(--accent-2);
+            color: #000;
+            box-shadow: 0 0 15px var(--accent-2);
+        }
+
+        .btn-ai-explain:disabled {
+            opacity: 0.5;
+            cursor: wait;
+        }
+
+        .ai-explain-box {
+            margin-top: 10px;
+            padding: 14px;
+            background: rgba(255, 0, 255, 0.03);
+            border: 1px solid rgba(255, 0, 255, 0.15);
+            border-radius: 10px;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            white-space: pre-wrap;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* ================================================================
+           SECTION 24: LOADING & ANIMATIONS
+           ================================================================ */
+        .dot-pulse::after {
             content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, .025) 2px, rgba(0, 0, 0, .025) 4px);
-            pointer-events: none;
-            z-index: 9998;
+            animation: dots 1.2s steps(3, end) infinite;
+        }
+
+        @keyframes dots {
+            0% {
+                content: '.';
+            }
+
+            33% {
+                content: '..';
+            }
+
+            66% {
+                content: '...';
+            }
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-8px);
+            }
+
+            75% {
+                transform: translateX(8px);
+            }
+        }
+
+        .shake {
+            animation: shake 0.3s ease;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .btn-spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(0, 0, 0, .3);
+            border-top-color: #000;
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(0.9);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1.3);
+                opacity: 0;
+            }
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-6px);
+            }
+        }
+
+        /* ================================================================
+           SECTION 25: RESPONSIVE
+           ================================================================ */
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 4px !important;
+            }
+
+            .nav-btn {
+                font-size: 0.65rem;
+                padding-bottom: 2px;
+            }
+
+            #live-log {
+                width: 240px;
+                font-size: 9px;
+            }
+
+            .flashcard-container {
+                height: 280px;
+            }
+
+            .dash-big-num {
+                font-size: 2rem;
+            }
+
+            .admin-table {
+                font-size: 0.72rem;
+            }
+
+            .admin-table td,
+            .admin-table th {
+                padding: 6px 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .glass-card {
+                padding: 20px;
+            }
+        }
+
+        /* ================================================================
+           SECTION 26: SPACED REPETITION BADGE
+           ================================================================ */
+        .sr-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.65rem;
+            font-weight: 700;
+        }
+
+        .sr-badge.mastered {
+            background: rgba(0, 255, 136, 0.15);
+            color: var(--neon-green);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .sr-badge.learning {
+            background: rgba(255, 170, 0, 0.15);
+            color: var(--neon-yellow);
+            border: 1px solid rgba(255, 170, 0, 0.3);
+        }
+
+        /* ================================================================
+           SECTION 27: MISC
+           ================================================================ */
+        .tag-chip {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
         }
     </style>
 </head>
 
-<body class="min-h-screen" oncontextmenu="blockRightClick(event)" oncopy="blockCopy(event)" onpaste="blockPaste(event)"
+<body oncontextmenu="blockRightClick(event)" oncopy="blockCopy(event)" onpaste="blockPaste(event)"
     oncut="blockCopy(event)">
-    <canvas id="matrix-canvas"></canvas>
 
-    <!-- Threat level bar -->
+    <!-- Background Canvases -->
+    <canvas id="matrix-canvas"></canvas>
+    <canvas id="particles-canvas"></canvas>
+
+    <!-- Threat Level Bar -->
     <div id="threat-bar-wrap">
         <div id="threat-bar"></div>
     </div>
 
-    <nav class="border-b border-cyan-900 bg-black/80 backdrop-blur-md sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="cyber-font text-2xl font-bold glow-text-blue tracking-tighter cursor-pointer"
+    <!-- ================================================================
+         NAVIGATION BAR
+         ================================================================ -->
+    <nav id="main-nav"
+        style="border-bottom:1px solid rgba(255,255,255,0.05);background:var(--bg-nav);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);position:sticky;top:0;z-index:50;">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
+            <div class="cyber-font text-xl md:text-2xl font-bold glow-text-blue tracking-tighter cursor-pointer flex items-center gap-2"
                 onclick="showSection('home')">
-                UET <span class="text-pink-500">NET</span> MASTER
-                <span class="text-xs text-green-400 ml-2 font-normal">AI GUARD v3.0</span>
+                UET <span style="color:var(--accent-2)">NET</span> MASTER
+                <span class="text-[10px] font-normal px-2 py-0.5 rounded"
+                    style="background:var(--bg-card);color:var(--accent-3);border:1px solid var(--border-primary);">v4.0</span>
             </div>
-            <div class="flex space-x-6 text-sm font-bold uppercase cyber-font">
-                <button onclick="showSection('home')" class="hover:text-cyan-400 transition">Trang chủ</button>
-                <button onclick="showSection('setup')" class="hover:text-cyan-400 transition">Nạp đề</button>
-                <button onclick="showSection('manual')" class="hover:text-cyan-400 transition">Hướng dẫn</button>
+            <div class="flex items-center gap-2 md:gap-3 flex-wrap nav-links">
+                <button id="nav-home" onclick="showSection('home')" class="nav-btn">Home</button>
+                <button id="nav-flashcard" onclick="showSection('flashcard')" class="nav-btn">Flash</button>
+                <button id="nav-practice" onclick="showSection('practice')" class="nav-btn">Practice</button>
+                <button id="nav-dashboard" onclick="showSection('dashboard')" class="nav-btn">Dashboard</button>
+                <button id="nav-admin" onclick="showSection('admin')" class="nav-btn">Admin</button>
+                <button id="nav-manual" onclick="showSection('manual')" class="nav-btn">Manual</button>
+                <button id="theme-btn" class="theme-toggle" onclick="cycleTheme()">
+                    <span id="theme-icon">🌌</span>
+                    <span id="theme-label" class="hidden md:inline">Cyberpunk</span>
+                </button>
             </div>
         </div>
     </nav>
 
-    <!-- Live security feed -->
+    <!-- Live Security Feed -->
     <div id="live-log">
-        <div class="log-entry log-ok">[GUARD] AI Monitoring system active</div>
+        <div class="log-entry log-ok">[GUARD] AI Monitoring system v4.0 active</div>
     </div>
 
-    <main class="max-w-4xl mx-auto px-4 py-12">
+    <!-- ================================================================
+         MAIN CONTENT
+         ================================================================ -->
+    <main class="max-w-5xl mx-auto px-4 py-10">
 
-        <!-- HOME -->
-        <section id="section-home" class="text-center">
-            <h1 class="text-6xl font-black cyber-font mb-6 glow-text-blue italic glitch" data-text="READY TO CONNECT?">
-                READY TO CONNECT?</h1>
-            <p class="text-gray-400 text-sm mb-2">⚠️ Hệ thống có tích hợp AI chống gian lận — mọi hành vi đáng ngờ sẽ bị
-                ghi lại và phân tích.</p>
-            <p class="text-gray-500 text-xs mb-8">Bao gồm: copy, chuột phải, chuyển tab, mở DevTools, rời cửa sổ, trả
-                lời quá nhanh.</p>
+        <!-- ============================================================
+             HOME SECTION
+             ============================================================ -->
+        <section id="section-home" class="app-section text-center">
+            <h1 class="text-4xl md:text-6xl font-black cyber-font mb-6 glow-text-blue italic glitch"
+                data-text="READY TO CONNECT?">
+                READY TO CONNECT?
+            </h1>
+            <p class="text-sm mb-2" style="color:var(--text-secondary)">⚠️ Hệ thống tích hợp AI chống gian lận — mọi
+                hành vi đáng ngờ sẽ bị ghi lại và phân tích.</p>
+            <p class="text-xs mb-8" style="color:var(--text-muted)">Bao gồm: copy, chuột phải, chuyển tab, mở DevTools,
+                rời cửa sổ, trả lời quá nhanh.</p>
 
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-                <div class="p-5 border border-gray-800 bg-gray-900/50 rounded-xl">
-                    <div class="text-cyan-400 text-3xl mb-1">30</div>
-                    <div class="text-xs uppercase font-bold text-gray-500">Câu hỏi</div>
+                <div class="stat-chip chip-pulse">
+                    <div class="text-3xl mb-1 font-black cyber-font" style="color:var(--accent-1)">30</div>
+                    <div class="text-xs uppercase font-bold" style="color:var(--text-muted)">Câu hỏi</div>
                 </div>
-                <div class="p-5 border border-gray-800 bg-gray-900/50 rounded-xl">
-                    <div class="text-pink-400 text-3xl mb-1">30s</div>
-                    <div class="text-xs uppercase font-bold text-gray-500">Mỗi câu</div>
+                <div class="stat-chip chip-pulse" style="animation-delay:.4s">
+                    <div class="text-3xl mb-1 font-black cyber-font" style="color:var(--accent-2)">30s</div>
+                    <div class="text-xs uppercase font-bold" style="color:var(--text-muted)">Mỗi câu</div>
                 </div>
-                <div class="p-5 border border-gray-800 bg-gray-900/50 rounded-xl">
-                    <div class="text-green-400 text-3xl mb-1">AI</div>
-                    <div class="text-xs uppercase font-bold text-gray-500">Giám sát</div>
+                <div class="stat-chip chip-pulse" style="animation-delay:.8s">
+                    <div class="text-3xl mb-1 font-black cyber-font" style="color:var(--neon-green)">AI</div>
+                    <div class="text-xs uppercase font-bold" style="color:var(--text-muted)">Giám sát</div>
                 </div>
-                <div class="p-5 border border-gray-800 bg-gray-900/50 rounded-xl">
-                    <div class="text-yellow-400 text-3xl mb-1">100%</div>
-                    <div class="text-xs uppercase font-bold text-gray-500">Bảo mật</div>
+                <div class="stat-chip chip-pulse" style="animation-delay:1.2s">
+                    <div class="text-3xl mb-1 font-black cyber-font" style="color:var(--neon-yellow)">100%</div>
+                    <div class="text-xs uppercase font-bold" style="color:var(--text-muted)">Bảo mật</div>
                 </div>
             </div>
+
             <div class="max-w-sm mx-auto mb-10 glass-card space-y-5">
                 <div>
-                    <label class="block text-[10px] cyber-font text-cyan-400 mb-2 uppercase tracking-widest">⚡
-                        Identification: Full Name</label>
+                    <label class="block text-[10px] cyber-font mb-2 uppercase tracking-widest"
+                        style="color:var(--accent-1)">⚡ Identification: Full Name</label>
                     <input type="text" id="user-name" placeholder="Họ và tên..." class="cyber-input">
                 </div>
                 <div>
-                    <label class="block text-[10px] cyber-font text-cyan-400 mb-2 uppercase tracking-widest">🔑 Access
-                        Key: Student ID</label>
-                    <input type="number" id="user-id" placeholder="Mã sinh viên..." class="cyber-input" min="1"
-                        max="99999999" step="1" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,8)">
+                    <label class="block text-[10px] cyber-font mb-2 uppercase tracking-widest"
+                        style="color:var(--accent-1)">🔑 Access Key: Student ID</label>
+                    <input type="text" id="user-id" placeholder="Mã sinh viên..." class="cyber-input"
+                        oninput="this.value=this.value.replace(/[^0-9a-zA-Z_]/g,'').slice(0,20)">
                 </div>
                 <div>
-                    <label class="block text-[10px] cyber-font text-cyan-400 mb-2 uppercase tracking-widest">🎯 Mission:
-                        Select Subject</label>
-                    <select id="subject-choice" class="cyber-input">
-                        <option value="network" class="bg-black">Network Computing</option>
-                        <option value="software_engineering" class="bg-black">Software Engineering</option>
-                    </select>
+                    <label class="block text-[10px] cyber-font mb-2 uppercase tracking-widest"
+                        style="color:var(--accent-1)">🎯 Mission: Select Subject</label>
+                    <select id="subject-choice" class="cyber-input"></select>
                 </div>
             </div>
-            <button onclick="prepareTest()" class="px-12 py-5 btn-cyber cyber-font text-2xl font-bold rounded-sm">
+            <button id="start-btn" onclick="prepareTest()"
+                class="px-12 py-5 btn-cyber cyber-font text-xl md:text-2xl font-bold rounded-lg">
                 THIẾT LẬP KẾT NỐI (START)
             </button>
         </section>
 
-        <!-- SETUP -->
-        <section id="section-setup" class="hidden">
-            <h2 class="text-3xl font-bold cyber-font mb-6 text-cyan-400 uppercase">Quản trị ngân hàng đề</h2>
-            <div class="bg-gray-900/80 p-6 rounded-2xl border border-gray-800">
-                <p class="text-sm text-gray-400 mb-4 italic font-bold">Dán mã JSON vào đây để cập nhật bộ đề mới.</p>
-                <textarea id="json-input"
-                    class="w-full h-64 bg-black border border-gray-800 rounded-xl p-4 text-cyan-300 font-mono text-xs focus:border-cyan-500 outline-none mb-6"
-                    placeholder='[{"q":"Câu hỏi?","options":["A","B","C","D"],"ans":0}]'></textarea>
-                <button onclick="saveJSON()"
-                    class="w-full py-4 bg-cyan-600 text-black font-bold rounded-xl hover:bg-cyan-400 transition uppercase">Cập
-                    nhật hệ thống</button>
-            </div>
-        </section>
-
-        <!-- MANUAL -->
-        <section id="section-manual" class="hidden">
-            <h2 class="text-3xl font-bold cyber-font mb-6 text-pink-500 uppercase">Cẩm nang thi cử</h2>
-            <div class="text-gray-300 space-y-4">
-                <div class="p-4 border-l-4 border-red-500 bg-red-900/10 rounded-r">
-                    <b class="text-red-400">🚨 HỆ THỐNG CHỐNG GIAN LẬN AI v3.0</b><br>
-                    Examiner AI sẽ phân tích toàn bộ hành vi của bạn và đưa ra nhận xét sau bài thi.
-                </div>
-                <div class="space-y-2 text-sm">
-                    <div class="flex items-start gap-2"><span class="text-red-400">❌</span> Chuyển tab / thu nhỏ trình
-                        duyệt → cảnh báo, quá 3 lần bị đình chỉ</div>
-                    <div class="flex items-start gap-2"><span class="text-red-400">❌</span> Copy (Ctrl+C) hoặc cắt
-                        (Ctrl+X) nội dung → bị ghi lại</div>
-                    <div class="flex items-start gap-2"><span class="text-red-400">❌</span> Paste (Ctrl+V) → bị ghi lại
-                    </div>
-                    <div class="flex items-start gap-2"><span class="text-red-400">❌</span> Chuột phải (Right-click) →
-                        bị chặn và ghi lại</div>
-                    <div class="flex items-start gap-2"><span class="text-red-400">❌</span> Di chuột ra ngoài cửa sổ →
-                        bị ghi lại</div>
-                    <div class="flex items-start gap-2"><span class="text-red-400">❌</span> Mở DevTools (F12,
-                        Ctrl+Shift+I) → bị ghi lại</div>
-                    <div class="flex items-start gap-2"><span class="text-red-400">❌</span> Trả lời quá nhanh (&lt;3
-                        giây) → bị đánh dấu đáng ngờ</div>
-                    <div class="flex items-start gap-2"><span class="text-green-400">✅</span> Làm bài nghiêm túc → AI
-                        xác nhận CLEAN</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- QUIZ -->
-        <section id="section-quiz" class="hidden">
+        <!-- ============================================================
+             QUIZ SECTION
+             ============================================================ -->
+        <section id="section-quiz" class="app-section hidden">
             <!-- Security status bar -->
-            <div class="mb-4 flex gap-3 text-xs cyber-font">
-                <span class="px-2 py-1 rounded bg-gray-900 border border-gray-800 text-gray-400">
-                    TAB OUT: <span id="stat-tabout" class="text-cyan-400">0</span>
+            <div class="mb-4 flex gap-2 md:gap-3 text-xs cyber-font flex-wrap">
+                <span class="px-2 py-1 rounded-lg"
+                    style="background:var(--bg-card);border:1px solid var(--border-secondary);color:var(--text-muted)">
+                    TAB OUT: <span id="stat-tabout" style="color:var(--accent-1)">0</span>
                 </span>
-                <span class="px-2 py-1 rounded bg-gray-900 border border-gray-800 text-gray-400">
-                    COPY ATT: <span id="stat-copy" class="text-cyan-400">0</span>
+                <span class="px-2 py-1 rounded-lg"
+                    style="background:var(--bg-card);border:1px solid var(--border-secondary);color:var(--text-muted)">
+                    COPY: <span id="stat-copy" style="color:var(--accent-1)">0</span>
                 </span>
-                <span class="px-2 py-1 rounded bg-gray-900 border border-gray-800 text-gray-400">
-                    RIGHTCLICK: <span id="stat-rclick" class="text-cyan-400">0</span>
+                <span class="px-2 py-1 rounded-lg"
+                    style="background:var(--bg-card);border:1px solid var(--border-secondary);color:var(--text-muted)">
+                    RCLICK: <span id="stat-rclick" style="color:var(--accent-1)">0</span>
                 </span>
-                <span class="px-2 py-1 rounded bg-gray-900 border border-gray-800 text-gray-400">
-                    FAST ANS: <span id="stat-fast" class="text-cyan-400">0</span>
+                <span class="px-2 py-1 rounded-lg"
+                    style="background:var(--bg-card);border:1px solid var(--border-secondary);color:var(--text-muted)">
+                    FAST: <span id="stat-fast" style="color:var(--accent-1)">0</span>
                 </span>
             </div>
 
-            <div class="border-neon bg-gray-950 rounded-2xl overflow-hidden">
+            <div class="border-neon rounded-2xl overflow-hidden" style="background:var(--bg-secondary)">
                 <div id="q-prog-wrap">
                     <div id="q-prog-fill"></div>
                 </div>
-                <div class="p-4 bg-cyan-900/20 border-b border-cyan-800 flex justify-between items-center">
-                    <div class="cyber-font font-bold text-cyan-400 text-sm" id="q-progress">FILE: 01/30</div>
+                <div class="p-4 flex justify-between items-center"
+                    style="background:rgba(0,242,255,0.04);border-bottom:1px solid var(--border-primary)">
+                    <div class="cyber-font font-bold text-sm" style="color:var(--accent-1)" id="q-progress">FILE: 01/30
+                    </div>
                     <div class="timer-ring">
                         <svg width="64" height="64" viewBox="0 0 64 64">
                             <circle cx="32" cy="32" r="27"
@@ -639,14 +1504,14 @@
                         <div id="timer-num">30</div>
                     </div>
                 </div>
-                <div class="p-8">
-                    <div id="q-text" class="text-2xl font-bold mb-8 leading-snug"></div>
-                    <div id="q-options" class="grid grid-cols-1 gap-4"></div>
-                    <div class="mt-10 flex justify-between items-center">
-                        <div id="q-warn" class="text-xs font-bold text-green-500 uppercase cyber-font">🛡 Security:
-                            Stable</div>
-                        <button onclick="handleNext()"
-                            class="px-8 py-3 bg-white text-black font-black cyber-font rounded-sm hover:bg-cyan-400 transition">
+                <div class="p-6 md:p-8">
+                    <div id="q-text" class="text-xl md:text-2xl font-bold mb-8 leading-snug"></div>
+                    <div id="q-options" class="grid grid-cols-1 gap-3"></div>
+                    <div class="mt-8 flex justify-between items-center">
+                        <div id="q-warn" class="text-xs font-bold uppercase cyber-font" style="color:var(--neon-green)">
+                            🛡 Security: Stable</div>
+                        <button onclick="handleNext()" class="px-8 py-3 font-black cyber-font rounded-lg transition"
+                            style="background:var(--accent-1);color:#000;">
                             NEXT »
                         </button>
                     </div>
@@ -654,290 +1519,897 @@
             </div>
         </section>
 
-        <!-- RESULT -->
-        <section id="section-result" class="hidden text-center">
-            <h2 class="text-5xl font-black cyber-font mb-4 glow-text-pink">MISSION REPORT</h2>
+        <!-- ============================================================
+             RESULT SECTION
+             ============================================================ -->
+        <section id="section-result" class="app-section hidden text-center">
+            <h2 class="text-4xl md:text-5xl font-black cyber-font mb-4 glow-text-pink">MISSION REPORT</h2>
 
             <div class="score-ring-wrap">
-                <svg width="160" height="160" viewBox="0 0 160 160">
-                    <circle cx="80" cy="80" r="70" style="fill:none;stroke:rgba(0,242,255,0.1);stroke-width:10" />
-                    <circle id="score-ring-fg" cx="80" cy="80" r="70"
-                        style="fill:none;stroke:var(--neon-blue);stroke-width:10;stroke-linecap:round;stroke-dasharray:439.8;stroke-dashoffset:439.8;transition:stroke-dashoffset 1.5s cubic-bezier(0.4,0,0.2,1),stroke .5s" />
+                <svg width="180" height="180" viewBox="0 0 180 180">
+                    <circle cx="90" cy="90" r="78" style="fill:none;stroke:rgba(0,242,255,0.1);stroke-width:10" />
+                    <circle id="score-ring-fg" cx="90" cy="90" r="78"
+                        style="fill:none;stroke:var(--accent-1);stroke-width:10;stroke-linecap:round;stroke-dasharray:490.1;stroke-dashoffset:490.1;transition:stroke-dashoffset 1.5s cubic-bezier(0.4,0,0.2,1),stroke .5s" />
                 </svg>
                 <div id="score-ring-text">
                     <div class="text-3xl font-black italic cyber-font" id="res-score">0/0</div>
-                    <div class="text-[10px] uppercase tracking-widest text-cyan-400">Accuracy</div>
+                    <div class="text-[10px] uppercase tracking-widest" style="color:var(--accent-1)">Accuracy</div>
                 </div>
             </div>
-            <div id="res-verdict" class="text-xl font-black cyber-font mb-4"></div>
+            <div id="res-verdict" class="text-xl font-black cyber-font mb-6"></div>
 
             <!-- Behavioral stats -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
                 <div class="stat-chip">
-                    <div class="val text-pink-400" id="r-tabout">0</div>
-                    <div class="text-xs text-gray-500 mt-1">Chuyển tab</div>
+                    <div class="val" style="color:var(--accent-2)" id="r-tabout">0</div>
+                    <div class="text-xs mt-1" style="color:var(--text-muted)">Chuyển tab</div>
                 </div>
                 <div class="stat-chip">
-                    <div class="val text-yellow-400" id="r-copy">0</div>
-                    <div class="text-xs text-gray-500 mt-1">Copy/Cut</div>
+                    <div class="val" style="color:var(--neon-yellow)" id="r-copy">0</div>
+                    <div class="text-xs mt-1" style="color:var(--text-muted)">Copy/Cut</div>
                 </div>
                 <div class="stat-chip">
-                    <div class="val text-orange-400" id="r-rclick">0</div>
-                    <div class="text-xs text-gray-500 mt-1">Chuột phải</div>
+                    <div class="val" style="color:var(--neon-orange)" id="r-rclick">0</div>
+                    <div class="text-xs mt-1" style="color:var(--text-muted)">Chuột phải</div>
                 </div>
                 <div class="stat-chip">
-                    <div class="val text-cyan-400" id="r-fast">0</div>
-                    <div class="text-xs text-gray-500 mt-1">Trả lời nhanh</div>
+                    <div class="val" style="color:var(--accent-1)" id="r-fast">0</div>
+                    <div class="text-xs mt-1" style="color:var(--text-muted)">Trả lời nhanh</div>
                 </div>
             </div>
 
-            <!-- AI Analysis box -->
+            <!-- AI Analysis -->
             <div id="ai-report-box">
                 <div class="text-left mb-3 flex items-center gap-2">
-                    <span class="text-green-400 text-lg">🤖</span>
-                    <span class="cyber-font text-sm text-gray-400 uppercase tracking-wider">Claude AI Integrity
-                        Analysis</span>
+                    <span class="text-lg" style="color:var(--neon-green)">🤖</span>
+                    <span class="cyber-font text-sm uppercase tracking-wider" style="color:var(--text-muted)">Claude AI
+                        Integrity Analysis</span>
                 </div>
-                <div id="ai-loading" class="text-gray-500 text-sm italic dot-pulse">Đang phân tích hành vi</div>
+                <div id="ai-loading" class="text-sm italic dot-pulse" style="color:var(--text-muted)">Đang phân tích
+                    hành vi</div>
                 <div id="ai-content" class="hidden text-left">
                     <div id="ai-verdict" class="mb-3">--</div>
-                    <div id="ai-text" class="text-sm text-gray-300 leading-relaxed whitespace-pre-wrap"></div>
+                    <div id="ai-text" class="text-sm leading-relaxed whitespace-pre-wrap"
+                        style="color:var(--text-secondary)"></div>
                 </div>
             </div>
 
-            <!-- Answer review -->
-            <div id="res-review"
-                class="text-left bg-gray-900/50 rounded-xl p-6 border border-gray-800 max-h-80 overflow-y-auto mb-10">
+            <!-- Answer Review -->
+            <div id="res-review" class="text-left rounded-xl p-6 max-h-96 overflow-y-auto mb-10"
+                style="background:var(--bg-card);border:1px solid var(--border-secondary)"></div>
+
+            <button onclick="location.reload()"
+                class="btn-cyber px-10 py-4 font-bold rounded-lg uppercase cyber-font">Reboot Session</button>
+        </section>
+
+        <!-- ============================================================
+             FLASHCARD SECTION
+             ============================================================ -->
+        <section id="section-flashcard" class="app-section hidden">
+            <h2 class="text-3xl font-bold cyber-font mb-2 uppercase" style="color:var(--accent-1)">Flash Cards</h2>
+            <p class="text-sm mb-6" style="color:var(--text-muted)">Lật thẻ để xem đáp án. Dùng phím ← → hoặc Space để
+                tương tác.</p>
+
+            <div class="flex gap-3 mb-6 justify-center flex-wrap">
+                <select id="fc-subject" class="cyber-input" style="max-width:220px"></select>
+                <button onclick="loadFlashCards()"
+                    class="px-6 py-3 btn-cyber cyber-font font-bold rounded-lg text-sm">TẢI THẺ</button>
+                <button onclick="shuffleFlashCards()"
+                    class="px-4 py-3 btn-cyber cyber-font font-bold rounded-lg text-sm">🔀</button>
             </div>
 
-            <button onclick="location.reload()" class="btn-cyber px-10 py-4 font-bold rounded-lg uppercase">Reboot
-                Session</button>
+            <div class="text-center mb-4">
+                <span class="cyber-font text-sm" style="color:var(--text-muted)">Thẻ <span id="fc-current"
+                        style="color:var(--accent-1)">0</span>
+                    / <span id="fc-total" style="color:var(--accent-1)">0</span></span>
+                <span id="fc-streak-badge" class="p-streak-badge ml-3 hidden"
+                    style="background:rgba(0,242,255,0.1);color:var(--accent-1)">✓ 0</span>
+            </div>
+
+            <div id="fc-card" class="flashcard-container" onclick="flipCard()">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">
+                        <div class="text-[10px] uppercase tracking-widest mb-4 cyber-font"
+                            style="color:var(--accent-1);opacity:0.5">CÂU HỎI</div>
+                        <div id="fc-question" class="text-lg md:text-xl font-bold leading-relaxed">Chọn môn học và nhấn
+                            TẢI THẺ để bắt đầu</div>
+                        <div class="text-xs mt-6" style="color:var(--text-muted)">Click hoặc nhấn Space để lật</div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div class="text-[10px] uppercase tracking-widest mb-4 cyber-font"
+                            style="color:rgba(0,255,136,0.5)">ĐÁP ÁN</div>
+                        <div id="fc-answer" class="text-lg font-bold leading-relaxed" style="color:var(--neon-green)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-center gap-3 mt-6 items-center flex-wrap">
+                <button onclick="fcPrev()" class="fc-nav-btn" id="fc-prev-btn">◀</button>
+                <button onclick="fcMarkKnown()" class="px-5 py-3 rounded-xl text-sm font-bold transition"
+                    style="border:1px solid rgba(0,255,136,0.3);background:rgba(0,255,136,0.08);color:var(--neon-green);">✓
+                    Biết rồi</button>
+                <button onclick="fcMarkUnknown()" class="px-5 py-3 rounded-xl text-sm font-bold transition"
+                    style="border:1px solid rgba(255,51,51,0.3);background:rgba(255,51,51,0.08);color:var(--neon-red);">✗
+                    Chưa biết</button>
+                <button onclick="fcNext()" class="fc-nav-btn" id="fc-next-btn">▶</button>
+            </div>
+
+            <div class="mt-6" id="fc-dots"></div>
+        </section>
+
+        <!-- ============================================================
+             PRACTICE SECTION
+             ============================================================ -->
+        <section id="section-practice" class="app-section hidden">
+            <h2 class="text-3xl font-bold cyber-font mb-2 uppercase" style="color:var(--accent-2)">Practice Mode</h2>
+            <p class="text-sm mb-6" style="color:var(--text-muted)">Luyện tập không giới hạn thời gian. Xem kết quả ngay
+                sau mỗi câu.</p>
+
+            <div class="flex gap-3 mb-6 justify-center flex-wrap">
+                <select id="prac-subject" class="cyber-input" style="max-width:220px"></select>
+                <button onclick="startPractice()"
+                    class="px-6 py-3 btn-cyber cyber-font font-bold rounded-lg text-sm">BẮT ĐẦU</button>
+            </div>
+
+            <div id="prac-stats" class="flex gap-3 mb-6 justify-center text-sm cyber-font hidden flex-wrap">
+                <span class="px-3 py-1 rounded-lg"
+                    style="background:var(--bg-card);border:1px solid var(--border-secondary)">
+                    Câu <span id="prac-cur" style="color:var(--accent-1)">0</span>/<span id="prac-total"
+                        style="color:var(--accent-1)">0</span>
+                </span>
+                <span class="px-3 py-1 rounded-lg"
+                    style="background:var(--bg-card);border:1px solid rgba(0,255,136,0.2)">
+                    ✓ <span id="prac-correct" style="color:var(--neon-green)">0</span>
+                </span>
+                <span class="px-3 py-1 rounded-lg"
+                    style="background:var(--bg-card);border:1px solid rgba(255,51,51,0.2)">
+                    ✗ <span id="prac-wrong" style="color:var(--neon-red)">0</span>
+                </span>
+                <span id="prac-streak" class="p-streak-badge"
+                    style="background:rgba(255,170,0,0.1);color:var(--neon-yellow)">🔥 0</span>
+            </div>
+
+            <div id="prac-card" class="border-neon rounded-2xl overflow-hidden hidden"
+                style="background:var(--bg-secondary)">
+                <div class="p-4 flex justify-between items-center"
+                    style="background:rgba(0,242,255,0.04);border-bottom:1px solid var(--border-primary)">
+                    <div class="cyber-font font-bold text-sm" style="color:var(--accent-1)" id="prac-progress">PRACTICE:
+                        01/?</div>
+                    <div class="text-xs cyber-font" style="color:var(--text-muted)">NO TIMER — TAKE YOUR TIME</div>
+                </div>
+                <div class="p-6 md:p-8">
+                    <div id="prac-q-text" class="text-xl md:text-2xl font-bold mb-8 leading-snug"></div>
+                    <div id="prac-options" class="grid grid-cols-1 gap-3"></div>
+                    <div id="prac-feedback" class="mt-6 hidden p-4 rounded-xl text-sm"></div>
+                    <div id="prac-explain-container" class="hidden"></div>
+                    <div class="mt-8 flex justify-end gap-3">
+                        <button id="prac-explain-btn" onclick="explainPracticeQuestion()"
+                            class="btn-ai-explain hidden">🤖 Explain with AI</button>
+                        <button id="prac-next-btn" onclick="practiceNext()"
+                            class="px-8 py-3 font-black cyber-font rounded-lg transition hidden"
+                            style="background:var(--accent-1);color:#000;">NEXT »</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="prac-summary" class="hidden text-center mt-8">
+                <h3 class="text-2xl font-bold cyber-font mb-4" style="color:var(--neon-green)">🎯 Hoàn tất luyện tập!
+                </h3>
+                <div class="grid grid-cols-3 gap-4 max-w-md mx-auto mb-6">
+                    <div class="stat-chip">
+                        <div class="val" style="color:var(--accent-1)" id="prac-s-total">0</div>
+                        <div class="text-xs mt-1" style="color:var(--text-muted)">Tổng câu</div>
+                    </div>
+                    <div class="stat-chip">
+                        <div class="val" style="color:var(--neon-green)" id="prac-s-correct">0</div>
+                        <div class="text-xs mt-1" style="color:var(--text-muted)">Đúng</div>
+                    </div>
+                    <div class="stat-chip">
+                        <div class="val" style="color:var(--neon-red)" id="prac-s-wrong">0</div>
+                        <div class="text-xs mt-1" style="color:var(--text-muted)">Sai</div>
+                    </div>
+                </div>
+                <div id="prac-summary-review" class="text-left max-h-80 overflow-y-auto mb-6 rounded-xl p-4"
+                    style="background:var(--bg-card);border:1px solid var(--border-secondary)"></div>
+                <button onclick="startPractice()" class="btn-cyber px-8 py-3 font-bold rounded-lg cyber-font">Luyện
+                    lại</button>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             DASHBOARD SECTION
+             ============================================================ -->
+        <section id="section-dashboard" class="app-section hidden">
+            <h2 class="text-3xl font-bold cyber-font mb-2 uppercase" style="color:var(--neon-green)">Dashboard</h2>
+            <p class="text-sm mb-8" style="color:var(--text-muted)">Theo dõi tiến trình học tập của bạn.</p>
+
+            <!-- Top Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div class="dash-card text-center">
+                    <h3>Quizzes</h3>
+                    <div class="dash-big-num" style="color:var(--accent-1)" id="dash-quizzes">0</div>
+                    <div class="text-xs mt-1" style="color:var(--text-muted)">Bài đã thi</div>
+                </div>
+                <div class="dash-card text-center">
+                    <h3>Accuracy</h3>
+                    <div class="dash-big-num" style="color:var(--neon-green)" id="dash-accuracy">0%</div>
+                    <div class="text-xs mt-1" style="color:var(--text-muted)">Tỷ lệ đúng</div>
+                </div>
+                <div class="dash-card text-center">
+                    <h3>Cards</h3>
+                    <div class="dash-big-num" style="color:var(--accent-2)" id="dash-cards">0</div>
+                    <div class="text-xs mt-1" style="color:var(--text-muted)">Thẻ đã học</div>
+                </div>
+                <div class="dash-card text-center">
+                    <h3>Streak</h3>
+                    <div class="dash-big-num" style="color:var(--neon-yellow)" id="dash-streak">0</div>
+                    <div class="text-xs mt-1" style="color:var(--text-muted)">Ngày liên tiếp</div>
+                </div>
+            </div>
+
+            <!-- Integrity Score & Behavioral Analysis -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="dash-card">
+                    <h3>Integrity Score</h3>
+                    <div class="integrity-wrap">
+                        <svg id="integrity-svg" width="200" height="200" viewBox="0 0 200 200"></svg>
+                        <div class="integrity-score-text">
+                            <div class="text-3xl font-black cyber-font" id="integrity-score-num"
+                                style="color:var(--neon-green)">100</div>
+                            <div class="text-[10px] uppercase tracking-widest" style="color:var(--text-muted)">Score
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dash-card">
+                    <h3>Behavioral Analysis</h3>
+                    <div class="flex justify-center">
+                        <svg id="radar-chart" width="200" height="200" viewBox="0 0 200 200"></svg>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 mt-4 text-xs" id="radar-legend"></div>
+                </div>
+            </div>
+
+            <!-- Subject Accuracy & History -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="dash-card">
+                    <h3>Accuracy by Subject</h3>
+                    <div class="space-y-4" id="dash-subject-bars"></div>
+                </div>
+                <div class="dash-card">
+                    <h3>Lịch sử gần đây</h3>
+                    <div id="dash-history" class="max-h-48 overflow-y-auto">
+                        <div class="text-sm italic" style="color:var(--text-muted)">Chưa có dữ liệu</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wrong Question Bank -->
+            <div class="dash-card mb-8" style="border:1px solid rgba(255,51,51,0.2);background:rgba(255,51,51,0.02)">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-left">
+                    <div>
+                        <h3 class="uppercase font-bold text-sm tracking-wider mb-1" style="color:var(--neon-red)">🚨
+                            Ngân hàng câu sai (Wrong Question Bank)</h3>
+                        <p class="text-xs" style="color:var(--text-muted)">Hệ thống tự động lưu các câu hỏi bạn làm sai.
+                            Spaced repetition: trả lời đúng 2 lần liên tiếp → mastered.</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="cyber-font text-2xl font-black px-4 py-2 rounded"
+                            style="color:var(--neon-red);border:1px solid rgba(255,51,51,0.3);background:rgba(0,0,0,0.5)"
+                            id="dash-wrong-count">0</span>
+                        <button onclick="learnWrongFlashcards()"
+                            class="px-6 py-3 text-xs font-bold uppercase rounded-lg cyber-font transition"
+                            style="border:1px solid var(--neon-red);background:rgba(255,51,51,0.08);color:var(--neon-red);">
+                            Luyện câu sai »
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button onclick="clearDashboard()" class="text-xs transition cyber-font uppercase"
+                    style="color:var(--text-muted);">Xoá dữ liệu</button>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             ADMIN SECTION
+             ============================================================ -->
+        <section id="section-admin" class="app-section hidden">
+            <h2 class="text-3xl font-bold cyber-font mb-2 uppercase" style="color:var(--neon-yellow)">Admin Panel</h2>
+            <p class="text-sm mb-6" style="color:var(--text-muted)">Quản trị ngân hàng câu hỏi. Yêu cầu Admin Key.</p>
+
+            <!-- Admin Auth -->
+            <div id="admin-auth" class="max-w-sm mx-auto glass-card text-center mb-8">
+                <label class="block text-[10px] cyber-font mb-2 uppercase tracking-widest"
+                    style="color:var(--neon-yellow)">🔐 Admin Key</label>
+                <input type="password" id="admin-key-input" placeholder="Nhập admin key..." class="cyber-input mb-4">
+                <button onclick="adminLogin()" class="btn-primary w-full cyber-font font-bold text-sm">ĐĂNG NHẬP
+                    ADMIN</button>
+            </div>
+
+            <!-- Admin Panel Content (hidden until auth) -->
+            <div id="admin-panel" class="hidden">
+                <!-- Controls -->
+                <div class="flex flex-wrap gap-3 mb-6 items-center">
+                    <select id="admin-subject-filter" class="cyber-input" style="max-width:200px"
+                        onchange="loadAdminQuestions()">
+                        <option value="">Tất cả môn</option>
+                    </select>
+                    <input type="text" id="admin-search" class="cyber-input" style="max-width:250px"
+                        placeholder="Tìm kiếm câu hỏi..." oninput="debounceAdminSearch()">
+                    <button onclick="openAddModal()" class="btn-primary cyber-font text-sm">+ Thêm câu hỏi</button>
+                    <button onclick="exportAdminJSON()"
+                        class="btn-cyber px-4 py-2 text-sm rounded-lg cyber-font font-bold">📤 Export JSON</button>
+                    <button onclick="document.getElementById('import-file').click()"
+                        class="btn-cyber px-4 py-2 text-sm rounded-lg cyber-font font-bold">📥 Import JSON</button>
+                    <input type="file" id="import-file" accept=".json" class="hidden" onchange="importAdminJSON(event)">
+                </div>
+
+                <!-- Add Subject -->
+                <div class="flex gap-3 mb-6 items-center">
+                    <input type="text" id="new-subject-name" class="cyber-input" style="max-width:200px"
+                        placeholder="Tên môn mới...">
+                    <button onclick="addNewSubject()"
+                        class="btn-cyber px-4 py-2 text-sm rounded-lg cyber-font font-bold">+ Thêm môn</button>
+                </div>
+
+                <!-- Questions Table -->
+                <div class="dash-card overflow-x-auto">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="m-0">Danh sách câu hỏi</h3>
+                        <span id="admin-count" class="text-xs mono-font" style="color:var(--text-muted)">0 câu</span>
+                    </div>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th style="width:40px">#</th>
+                                <th>Câu hỏi</th>
+                                <th style="width:100px">Môn</th>
+                                <th style="width:60px">Đáp án</th>
+                                <th style="width:120px">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             MANUAL SECTION
+             ============================================================ -->
+        <section id="section-manual" class="app-section hidden">
+            <h2 class="text-3xl font-bold cyber-font mb-6 uppercase" style="color:var(--accent-2)">Cẩm nang thi cử</h2>
+            <div class="space-y-4" style="color:var(--text-secondary)">
+                <div class="p-5 rounded-xl"
+                    style="border-left:4px solid var(--neon-red);background:rgba(255,51,51,0.05)">
+                    <b style="color:var(--neon-red)">🚨 HỆ THỐNG CHỐNG GIAN LẬN AI v4.0</b><br>
+                    <span class="text-sm">Examiner AI sẽ phân tích toàn bộ hành vi của bạn và đưa ra nhận xét sau bài
+                        thi.</span>
+                </div>
+                <div class="space-y-3 text-sm">
+                    <div class="flex items-start gap-2"><span style="color:var(--neon-red)">❌</span> Chuyển tab / thu
+                        nhỏ trình duyệt → cảnh báo, quá 3 lần bị đình chỉ</div>
+                    <div class="flex items-start gap-2"><span style="color:var(--neon-red)">❌</span> Copy (Ctrl+C) hoặc
+                        cắt (Ctrl+X) nội dung → bị ghi lại</div>
+                    <div class="flex items-start gap-2"><span style="color:var(--neon-red)">❌</span> Paste (Ctrl+V) → bị
+                        ghi lại</div>
+                    <div class="flex items-start gap-2"><span style="color:var(--neon-red)">❌</span> Chuột phải
+                        (Right-click) → bị chặn và ghi lại</div>
+                    <div class="flex items-start gap-2"><span style="color:var(--neon-red)">❌</span> Di chuột ra ngoài
+                        cửa sổ → bị ghi lại</div>
+                    <div class="flex items-start gap-2"><span style="color:var(--neon-red)">❌</span> Mở DevTools (F12,
+                        Ctrl+Shift+I) → bị ghi lại</div>
+                    <div class="flex items-start gap-2"><span style="color:var(--neon-red)">❌</span> Trả lời quá nhanh
+                        (&lt;3 giây) → bị đánh dấu đáng ngờ</div>
+                    <div class="flex items-start gap-2"><span style="color:var(--neon-green)">✅</span> Làm bài nghiêm
+                        túc → AI xác nhận CLEAN</div>
+                </div>
+                <div class="p-5 rounded-xl mt-6"
+                    style="border-left:4px solid var(--accent-1);background:var(--bg-card)">
+                    <b style="color:var(--accent-1)">📚 CÁC CHẾ ĐỘ HỌC</b><br>
+                    <span class="text-sm">• <b>Quiz</b>: Kiểm tra với timer 30s/câu, AI giám sát<br>
+                        • <b>Practice</b>: Luyện tập thoải mái, xem đáp án ngay<br>
+                        • <b>Flash Cards</b>: Lật thẻ ôn tập, hỗ trợ spaced repetition<br>
+                        • <b>AI Explain</b>: Nhờ AI giải thích chi tiết mọi câu hỏi</span>
+                </div>
+            </div>
         </section>
 
     </main>
 
+    <!-- ================================================================
+         ADMIN MODAL (Question Add/Edit)
+         ================================================================ -->
+    <div id="admin-modal" class="admin-modal-overlay hidden">
+        <div class="admin-modal">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold cyber-font" style="color:var(--accent-1)" id="modal-title">Thêm câu hỏi
+                </h3>
+                <button onclick="closeAdminModal()" class="text-2xl"
+                    style="color:var(--text-muted);cursor:pointer;background:none;border:none;">✕</button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs cyber-font mb-1 uppercase" style="color:var(--accent-1)">Câu hỏi</label>
+                    <textarea id="modal-q" class="cyber-input" rows="3" placeholder="Nội dung câu hỏi..."></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs cyber-font mb-1 uppercase" style="color:var(--accent-1)">Lựa chọn (mỗi
+                        dòng 1 lựa chọn)</label>
+                    <textarea id="modal-options" class="cyber-input mono-font" rows="4"
+                        placeholder="Option A&#10;Option B&#10;Option C&#10;Option D"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs cyber-font mb-1 uppercase" style="color:var(--accent-1)">Đáp án đúng
+                            (0-based index)</label>
+                        <input type="number" id="modal-answer" class="cyber-input" min="0" max="9" placeholder="0">
+                    </div>
+                    <div>
+                        <label class="block text-xs cyber-font mb-1 uppercase" style="color:var(--accent-1)">Môn
+                            học</label>
+                        <select id="modal-subject" class="cyber-input"></select>
+                    </div>
+                </div>
+                <input type="hidden" id="modal-edit-id" value="">
+                <div class="flex gap-3 mt-6">
+                    <button onclick="saveAdminQuestion()" class="btn-primary flex-1 cyber-font font-bold">💾
+                        Lưu</button>
+                    <button onclick="closeAdminModal()" class="btn-danger flex-1 cyber-font font-bold">Hủy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================================================
+         AI EXPLAIN MODAL
+         ================================================================ -->
+    <div id="ai-explain-modal" class="admin-modal-overlay hidden">
+        <div class="admin-modal" style="max-width:650px">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold cyber-font flex items-center gap-2" style="color:var(--accent-2)">🤖 AI
+                    Explanation</h3>
+                <button onclick="closeExplainModal()" class="text-2xl"
+                    style="color:var(--text-muted);cursor:pointer;background:none;border:none;">✕</button>
+            </div>
+            <div id="ai-explain-content" class="text-sm leading-relaxed whitespace-pre-wrap"
+                style="color:var(--text-secondary)">
+                <div class="dot-pulse" style="color:var(--text-muted)">Đang hỏi AI</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================================================
+         JAVASCRIPT — MAIN APPLICATION LOGIC (IIFE)
+         ================================================================ -->
     <script>
         (function () {
-            // 1. TRẠNG THÁI RIÊNG TƯ (Console không thể soi)
-            let state = {
+            'use strict';
+
+            // ============================================================
+            // 1. APPLICATION STATE
+            // ============================================================
+            const state = {
                 bank: [], activeQs: [], cur: 0, ans: [], warns: 0, time: 30, timer: null,
-                testing: false, studentName: "", studentId: "", isMaster: false,
+                testing: false, studentName: '', studentId: '', isMaster: false,
                 tabOuts: 0, copyAttempts: 0, pasteAttempts: 0, rightClicks: 0,
                 mouseOuts: 0, fastAnswers: 0, devToolsOpens: 0, behaviorLog: [],
-                // Thêm vào trong đối tượng state
-                mouseOuts: 0,    // Đếm số lần chuột rời cửa sổ
-                devToolsOpens: 0 // Đếm số lần mở DevTools/Inspect
+                questionStartTime: 0, currentSubject: '',
+                subjects: []
             };
 
             const SECRET_KEY = CryptoJS.enc.Utf8.parse('UET_PROCTOR_2026');
             const IV = CryptoJS.enc.Utf8.parse('1234567890123456');
 
+            const ADMIN_KEY = 'UET_MASTER';
+            let adminAuthenticated = false;
+            let adminSearchTimer = null;
+
             // ============================================================
-            // 2. LỚP CHẶN HÀNH VI (EXPORT RA WINDOW CHO HTML GỌI)
+            // 2. THEME ENGINE
             // ============================================================
-            window.blockCopy = (e) => {
+            const themes = [
+                { id: 'cyberpunk', label: 'Cyberpunk', icon: '🌌', attr: null },
+                { id: 'midnight', label: 'Midnight', icon: '🌙', attr: 'midnight' },
+                { id: 'hacker', label: 'Hacker', icon: '💀', attr: 'hacker' }
+            ];
+            let currentThemeIdx = parseInt(localStorage.getItem('uet_theme_idx') || '0');
+
+            function applyTheme(idx) {
+                currentThemeIdx = idx % themes.length;
+                const theme = themes[currentThemeIdx];
+                if (theme.attr) {
+                    document.documentElement.setAttribute('data-theme', theme.attr);
+                } else {
+                    document.documentElement.removeAttribute('data-theme');
+                }
+                const iconEl = document.getElementById('theme-icon');
+                const labelEl = document.getElementById('theme-label');
+                if (iconEl) iconEl.textContent = theme.icon;
+                if (labelEl) labelEl.textContent = theme.label;
+                localStorage.setItem('uet_theme_idx', currentThemeIdx);
+            }
+
+            window.cycleTheme = function () {
+                applyTheme(currentThemeIdx + 1);
+            };
+
+            // ============================================================
+            // 3. SECURITY HANDLERS (exported to window for inline HTML)
+            // ============================================================
+            window.blockCopy = function (e) {
                 if (!state.testing || state.isMaster) return;
                 e.preventDefault(); state.copyAttempts++;
                 liveLog(`Copy/Cut bị chặn tại câu ${state.cur + 1}`, 'warn');
-                updateSecStats();
+                updateSecStats(); updateThreatBar();
             };
 
-            window.blockPaste = (e) => {
+            window.blockPaste = function (e) {
                 if (!state.testing || state.isMaster) return;
                 e.preventDefault(); state.pasteAttempts++;
-                liveLog(`Paste bị chặn!`, 'warn');
-                updateSecStats();
+                liveLog('Paste bị chặn!', 'warn');
+                updateSecStats(); updateThreatBar();
             };
 
-            window.blockRightClick = (e) => {
+            window.blockRightClick = function (e) {
                 if (!state.testing || state.isMaster) return;
                 e.preventDefault(); state.rightClicks++;
-                liveLog(`Chuột phải bị chặn!`, 'warn');
-                updateSecStats();
+                liveLog('Chuột phải bị chặn!', 'warn');
+                updateSecStats(); updateThreatBar();
                 return false;
             };
 
             // ============================================================
-            // 3. CẢM BIẾN VẬT LÝ & PROTOTYPE (CHỐNG DEEP STEALTH)
+            // 4. DEVTOOLS & PROTOTYPE DETECTION
             // ============================================================
+            let frameDetected = true;
             function heartbeatFrame() { frameDetected = true; requestAnimationFrame(heartbeatFrame); }
             requestAnimationFrame(heartbeatFrame);
-            setInterval(() => {
+
+            setInterval(function () {
                 if (!state.testing || state.isMaster) return;
-                const threshold = 160; // Độ lệch khung hình (pixels)
+                const threshold = 160;
                 const isDevToolsOpen = (window.outerWidth - window.innerWidth > threshold) ||
                     (window.outerHeight - window.innerHeight > threshold);
                 if (isDevToolsOpen) {
                     state.devToolsOpens++;
-                    liveLog("🚨 PHÁT HIỆN MỞ DEVTOOLS/INSPECT!", "danger");
+                    liveLog('🚨 PHÁT HIỆN MỞ DEVTOOLS/INSPECT!', 'danger');
+                    updateThreatBar();
                 }
             }, 2000);
 
-
-            // Kiểm tra tính nguyên bản của Prototype
-            setInterval(() => {
+            setInterval(function () {
                 if (!state.testing || state.isMaster) return;
-                const isNative = document.hasFocus.toString().includes('[native code]');
-                const desc = Object.getOwnPropertyDescriptor(Document.prototype, 'visibilityState');
-                const isProxy = desc && (!desc.get.toString().includes('[native code]'));
-                if (!isNative || isProxy) kickUser("Prototype Tampering Detected (Hooking)");
+                try {
+                    const isNative = document.hasFocus.toString().includes('[native code]');
+                    const desc = Object.getOwnPropertyDescriptor(Document.prototype, 'visibilityState');
+                    const isProxy = desc && (!desc.get.toString().includes('[native code]'));
+                    if (!isNative || isProxy) kickUser('Prototype Tampering Detected (Hooking)');
+                } catch (e) { }
             }, 3000);
 
             // ============================================================
-            // 4. LỚP CHẶN TRUYỀN THỐNG (TAB-OUT, MOUSE-LEAVE, DEVTOOLS)
+            // 5. EVENT LISTENERS (Tab switch, mouse leave, keyboard)
             // ============================================================
-
-            // Bắt Tab Switch
-            document.addEventListener('visibilitychange', () => {
-                window.onblur = function () {
-                    if (!state.testing || state.isMaster) return;
+            document.addEventListener('visibilitychange', function () {
+                if (!state.testing || state.isMaster) return;
+                if (document.hidden) {
                     state.tabOuts++;
                     liveLog(`🚨 CẢNH BÁO: Rời khỏi vùng thi! (Lần ${state.tabOuts})`, 'danger');
-                    if (state.tabOuts >= 3) kickUser("Rời cửa sổ quá 3 lần");
-                };
+                    updateSecStats(); updateThreatBar();
+                    if (state.tabOuts >= 3) kickUser('Rời cửa sổ quá 3 lần');
+                }
             });
 
-            // Bắt Mouse Leave
-            document.addEventListener('mouseleave', () => {
+            window.addEventListener('blur', function () {
+                if (!state.testing || state.isMaster) return;
+                state.tabOuts++;
+                liveLog(`🚨 CẢNH BÁO: Rời khỏi vùng thi! (Lần ${state.tabOuts})`, 'danger');
+                updateSecStats(); updateThreatBar();
+                if (state.tabOuts >= 3) kickUser('Rời cửa sổ quá 3 lần');
+            });
+
+            document.addEventListener('mouseleave', function () {
                 if (!state.testing || state.isMaster) return;
                 state.mouseOuts++;
-                liveLog(`Chuột rời cửa sổ!`, 'warn');
+                liveLog('Chuột rời cửa sổ!', 'warn');
+                updateThreatBar();
             });
 
-            // Chặn Phím tắt DevTools + keyboard answer shortcuts
-            document.addEventListener('keydown', (e) => {
-                if (!state.testing) return;
-                if (!state.isMaster && (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) || (e.ctrlKey && e.key.toUpperCase() === 'U'))) {
-                    e.preventDefault(); state.devToolsOpens++;
-                    liveLog(`Phím tắt DevTools bị chặn!`, 'danger'); return;
+            document.addEventListener('keydown', function (e) {
+                // DevTools blocking during quiz
+                if (state.testing && !state.isMaster) {
+                    if (e.key === 'F12' ||
+                        (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) ||
+                        (e.ctrlKey && e.key.toUpperCase() === 'U')) {
+                        e.preventDefault(); state.devToolsOpens++;
+                        liveLog('Phím tắt DevTools bị chặn!', 'danger');
+                        updateThreatBar();
+                        return;
+                    }
                 }
-                // A/B/C/D or 1/2/3/4 to pick answer
-                const km = { 'a': 0, 'b': 1, 'c': 2, 'd': 3, '1': 0, '2': 1, '3': 2, '4': 3 };
-                const idx = km[e.key.toLowerCase()];
-                if (idx !== undefined) { const btns = document.querySelectorAll('.opt-btn'); if (btns[idx]) btns[idx].click(); }
+
+                // Quiz keyboard shortcuts (A/B/C/D or 1/2/3/4)
+                if (state.testing) {
+                    const quizSection = document.getElementById('section-quiz');
+                    if (quizSection && !quizSection.classList.contains('hidden')) {
+                        const km = { 'a': 0, 'b': 1, 'c': 2, 'd': 3, '1': 0, '2': 1, '3': 2, '4': 3 };
+                        const idx = km[e.key.toLowerCase()];
+                        if (idx !== undefined) {
+                            const btns = document.querySelectorAll('#q-options .opt-btn');
+                            if (btns[idx]) btns[idx].click();
+                        }
+                    }
+                }
+
+                // Flashcard keyboard
+                const fcSection = document.getElementById('section-flashcard');
+                if (fcSection && !fcSection.classList.contains('hidden')) {
+                    if (e.key === 'ArrowLeft') window.fcPrev();
+                    else if (e.key === 'ArrowRight') window.fcNext();
+                    else if (e.key === ' ') { e.preventDefault(); window.flipCard(); }
+                }
+
+                // Practice keyboard (A/B/C/D)
+                const pracSection = document.getElementById('section-practice');
+                if (pracSection && !pracSection.classList.contains('hidden') && !pracState.answered) {
+                    const pracKm = { 'a': 0, 'b': 1, 'c': 2, 'd': 3 };
+                    const pracIdx = pracKm[e.key.toLowerCase()];
+                    if (pracIdx !== undefined) practiceSelect(pracIdx);
+                }
             });
 
             // ============================================================
-            // 5. CORE FUNCTIONS (HÀM NỘI BỘ)
+            // 6. UTILITY FUNCTIONS
             // ============================================================
-            function liveLog(msg, type = 'ok') {
+            function liveLog(msg, type) {
+                type = type || 'ok';
                 const log = document.getElementById('live-log');
                 if (!log) return;
                 const entry = document.createElement('div');
-                entry.className = `log-entry log-${type}`;
-                entry.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+                entry.className = 'log-entry log-' + type;
+                entry.textContent = '[' + new Date().toLocaleTimeString() + '] ' + msg;
                 log.prepend(entry);
+                // Limit to 50 entries
+                while (log.children.length > 50) log.removeChild(log.lastChild);
             }
 
             function updateSecStats() {
-                const s = el => document.getElementById(el);
-                if (s('stat-tabout')) s('stat-tabout').textContent = state.tabOuts;
-                if (s('stat-copy')) s('stat-copy').textContent = state.copyAttempts;
-                if (s('stat-rclick')) s('stat-rclick').textContent = state.rightClicks;
+                const el = function (id) { return document.getElementById(id); };
+                if (el('stat-tabout')) el('stat-tabout').textContent = state.tabOuts;
+                if (el('stat-copy')) el('stat-copy').textContent = state.copyAttempts;
+                if (el('stat-rclick')) el('stat-rclick').textContent = state.rightClicks;
+                if (el('stat-fast')) el('stat-fast').textContent = state.fastAnswers;
             }
 
-            async function kickUser(reason) {
-                if (state.isMaster) return;
-                state.testing = false; clearInterval(state.timer);
-                try {
-                    await fetch('/api/security-breach', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ reason, user: state.studentName, mssv: state.studentId, timestamp: new Date().toISOString() })
-                    });
-                } catch (e) { }
-                document.body.innerHTML = `<div style="background:#000;color:#f33;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:sans-serif;text-align:center;">
-            <h1 style="font-size:4rem;text-shadow:0 0 20px red;">SYSTEM LOCKED</h1>
-            <p style="color:#fff;font-size:1.5rem;">Phát hiện vi phạm: ${reason}</p>
-            <p style="color:#666;margin-top:20px;">Dữ liệu đã được gửi về máy chủ UET.</p>
-        </div>`;
+            function updateThreatBar() {
+                const total = state.tabOuts + state.copyAttempts + state.pasteAttempts + state.rightClicks + state.mouseOuts + state.fastAnswers + state.devToolsOpens;
+                const pct = Math.min(total * 10, 100);
+                const bar = document.getElementById('threat-bar');
+                if (bar) bar.style.width = pct + '%';
             }
 
             function decryptPayload(encryptedStr) {
                 try {
-                    const decrypted = CryptoJS.AES.decrypt(encryptedStr, SECRET_KEY, { iv: IV, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 });
+                    const decrypted = CryptoJS.AES.decrypt(encryptedStr, SECRET_KEY, {
+                        iv: IV, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7
+                    });
                     return JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
                 } catch (e) { return null; }
             }
 
+            async function fetchDecryptedQuestions(subject) {
+                const res = await fetch('/api/questions/' + subject);
+                const data = await res.json();
+                if (!data.payload) throw new Error('Không có dữ liệu cho môn này');
+                const dec = CryptoJS.AES.decrypt(data.payload, SECRET_KEY, {
+                    iv: IV, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7
+                });
+                return JSON.parse(dec.toString(CryptoJS.enc.Utf8));
+            }
+
+            async function kickUser(reason) {
+                if (state.isMaster) return;
+                state.testing = false;
+                clearInterval(state.timer);
+                try {
+                    await fetch('/api/security-breach', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            reason: reason,
+                            user: state.studentName,
+                            mssv: state.studentId,
+                            timestamp: new Date().toISOString()
+                        })
+                    });
+                } catch (e) { }
+                document.body.innerHTML = '<div style="background:#000;color:#f33;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:sans-serif;text-align:center;padding:20px;">' +
+                    '<h1 style="font-size:3rem;text-shadow:0 0 20px red;">SYSTEM LOCKED</h1>' +
+                    '<p style="color:#fff;font-size:1.2rem;margin-top:16px;">Phát hiện vi phạm: ' + reason + '</p>' +
+                    '<p style="color:#666;margin-top:20px;">Dữ liệu đã được gửi về máy chủ UET.</p></div>';
+            }
+
             // ============================================================
-            // 6. EXPORT TO WINDOW (HÀM CÔNG KHAI)
+            // 7. SUBJECT MANAGEMENT
             // ============================================================
-            window.showSection = (id) => {
-                document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
-                document.getElementById('section-' + id).classList.remove('hidden');
+            async function loadSubjects() {
+                try {
+                    const res = await fetch('/api/subjects');
+                    const subjects = await res.json();
+                    state.subjects = subjects;
+                    populateSubjectSelects(subjects);
+                } catch (e) {
+                    console.warn('Could not load subjects, using defaults');
+                    state.subjects = ['network', 'software_engineering'];
+                    populateSubjectSelects(state.subjects);
+                }
+            }
+
+            function formatSubjectName(s) {
+                return s.replace(/_/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+            }
+
+            function populateSubjectSelects(subjects) {
+                const selects = [
+                    document.getElementById('subject-choice'),
+                    document.getElementById('fc-subject'),
+                    document.getElementById('prac-subject'),
+                    document.getElementById('admin-subject-filter'),
+                    document.getElementById('modal-subject')
+                ];
+
+                selects.forEach(function (sel) {
+                    if (!sel) return;
+                    const currentVal = sel.value;
+                    sel.innerHTML = '';
+
+                    // Special cases
+                    if (sel.id === 'admin-subject-filter') {
+                        const allOpt = document.createElement('option');
+                        allOpt.value = '';
+                        allOpt.textContent = 'Tất cả môn';
+                        allOpt.style.background = '#0a0a0a';
+                        sel.appendChild(allOpt);
+                    }
+
+                    subjects.forEach(function (s) {
+                        const opt = document.createElement('option');
+                        opt.value = s;
+                        opt.textContent = formatSubjectName(s);
+                        opt.style.background = '#0a0a0a';
+                        sel.appendChild(opt);
+                    });
+
+                    // Add "Wrong Questions" for flashcard selector
+                    if (sel.id === 'fc-subject') {
+                        const opt = document.createElement('option');
+                        opt.value = 'wrong_questions';
+                        opt.textContent = '⚠️ Câu làm sai (Wrong Qs)';
+                        opt.style.background = '#0a0a0a';
+                        opt.style.color = '#ff3333';
+                        sel.appendChild(opt);
+                    }
+
+                    if (currentVal) sel.value = currentVal;
+                });
+            }
+
+            // ============================================================
+            // 8. NAVIGATION
+            // ============================================================
+            window.showSection = function (id) {
+                const targetEl = document.getElementById('section-' + id);
+                document.querySelectorAll('.app-section').forEach(function (s) {
+                    if (s === targetEl) return;
+                    s.classList.remove('section-visible');
+                    setTimeout(function () { s.classList.add('hidden'); }, 350);
+                });
+                if (targetEl) {
+                    targetEl.classList.remove('hidden');
+                    void targetEl.offsetWidth;
+                    targetEl.classList.add('section-visible');
+                }
+                // Update nav
+                var navIds = ['home', 'flashcard', 'practice', 'dashboard', 'admin', 'manual'];
+                navIds.forEach(function (n) {
+                    var btn = document.getElementById('nav-' + n);
+                    if (btn) btn.classList.toggle('nav-active', n === id);
+                });
+                // Dashboard auto-refresh
+                if (id === 'dashboard') refreshDashboard();
             };
 
+            // ============================================================
+            // 9. QUIZ MODULE
+            // ============================================================
             window.prepareTest = async function () {
                 const name = document.getElementById('user-name').value.trim();
                 const mssv = document.getElementById('user-id').value.trim();
                 const subject = document.getElementById('subject-choice').value;
 
-                if (!name || !mssv) return alert("Dạ thưa cậu chủ, hãy nhập đầy đủ thông tin ạ!");
-                const mssvNum = parseInt(mssv, 10);
-                if (isNaN(mssvNum) || mssvNum <= 0 || mssvNum > 99999999) {
-                    return alert("⚠️ Mã sinh viên phải là số nguyên từ 1 đến 99999999!");
-                }
+                if (!name || !mssv) return alert('Hãy nhập đầy đủ họ tên và mã sinh viên!');
 
                 state.studentName = name;
                 state.studentId = mssv;
+                state.currentSubject = subject;
 
-                // === 💎 KHÔI PHỤC GOD MODE: ĐẶC QUYỀN CỦA CẬU CHỦ QUÂN ===
-                // Giúp cậu chủ miễn nhiễm với mọi lệnh kickUser của hệ thống
+                // GOD MODE
                 if (mssv === 'UET_MASTER' || name.toUpperCase() === 'NGUYỄN MINH QUÂN') {
                     state.isMaster = true;
-                    liveLog("💎 GOD MODE: ACTIVATED - SECURITY BYPASS ENABLED", "ok");
+                    liveLog('💎 GOD MODE: ACTIVATED — SECURITY BYPASS ENABLED', 'ok');
                 } else {
-                    state.isMaster = false; // Đảm bảo người thường không thể hack
+                    state.isMaster = false;
                 }
 
-                liveLog(`Connecting to secure server for ${subject}...`, 'ok');
+                // Show loading spinner
+                const startBtn = document.getElementById('start-btn');
+                const origLabel = startBtn.innerHTML;
+                startBtn.innerHTML = '<span class="btn-spinner"></span> ĐANG KẾT NỐI...';
+                startBtn.disabled = true;
+                startBtn.style.opacity = '0.7';
+
+                liveLog('Connecting to secure server for ' + subject + '...', 'ok');
+
+                var restoreBtn = function () {
+                    startBtn.innerHTML = origLabel;
+                    startBtn.disabled = false;
+                    startBtn.style.opacity = '1';
+                };
 
                 try {
-                    const res = await fetch(`/api/questions/${subject}`);
+                    const res = await fetch('/api/questions/' + subject);
                     const data = await res.json();
 
                     if (!data.payload) {
-                        alert("Môn này hiện chưa có đề thi trên hệ thống ạ!");
+                        restoreBtn();
+                        alert('Môn này hiện chưa có đề thi trên hệ thống!');
                         return;
                     }
 
-                    const decrypted = CryptoJS.AES.decrypt(data.payload, SECRET_KEY, {
-                        iv: IV,
-                        mode: CryptoJS.mode.CBC,
-                        padding: CryptoJS.pad.Pkcs7
-                    });
+                    const questions = decryptPayload(data.payload);
+                    if (!questions) {
+                        restoreBtn();
+                        alert('Lỗi giải mã dữ liệu!');
+                        return;
+                    }
 
-                    const questions = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
                     state.bank = questions;
-
-                    state.activeQs = [...state.bank].sort(() => 0.5 - Math.random()).slice(0, 5);
+                    state.activeQs = [].concat(state.bank).sort(function () { return 0.5 - Math.random(); }).slice(0, 10);
                     state.cur = 0;
-                    window.showSection('quiz');
+                    state.ans = [];
+                    state.tabOuts = 0; state.copyAttempts = 0; state.pasteAttempts = 0;
+                    state.rightClicks = 0; state.mouseOuts = 0; state.fastAnswers = 0;
+                    state.devToolsOpens = 0;
                     state.testing = true;
+
+                    window.showSection('quiz');
                     loadQ();
 
                 } catch (e) {
                     console.error(e);
-                    alert("Lỗi nạp đề thi từ máy chủ, cậu chủ hãy kiểm tra lại kết nối ạ!");
+                    restoreBtn();
+                    alert('Lỗi nạp đề thi từ máy chủ!');
                 }
             };
 
             window.handleNext = function () {
-                const sel = document.querySelector('input[name="opt"]:checked');
-                const val = sel ? parseInt(sel.value) : -1;
+                var sel = document.querySelector('input[name="opt"]:checked');
+                var val = sel ? parseInt(sel.value) : -1;
 
-                const currentQ = state.activeQs[state.cur];
-                // Đổi .id thành .q_id ở đây ạ
-                const q_id = currentQ.q_id || `offline-${state.cur}`;
+                var currentQ = state.activeQs[state.cur];
+                var q_id = currentQ.q_id || ('offline-' + state.cur);
 
-                const duration = (Date.now() - state.questionStartTime) / 1000;
+                var duration = (Date.now() - state.questionStartTime) / 1000;
                 if (val !== -1 && duration < 3) {
                     state.fastAnswers++;
-                    if (document.getElementById('stat-fast')) {
-                        document.getElementById('stat-fast').textContent = state.fastAnswers;
-                    }
-                    liveLog(`⚠️ Fast Answer detected: ${duration.toFixed(1)}s`, 'warn');
+                    var fastEl = document.getElementById('stat-fast');
+                    if (fastEl) fastEl.textContent = state.fastAnswers;
+                    liveLog('⚠️ Fast Answer detected: ' + duration.toFixed(1) + 's', 'warn');
+                    updateThreatBar();
                 }
 
                 state.ans.push(val);
@@ -945,25 +2417,190 @@
                 fetch('/api/submit-choice', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        q_id: q_id, // Gửi đúng q_id lên server
-                        choice: val,
-                        mssv: state.studentId
-                    })
-                }).catch(e => console.warn("Lưu lựa chọn thất bại"));
+                    body: JSON.stringify({ q_id: q_id, choice: val, mssv: state.studentId })
+                }).catch(function () { });
 
                 state.cur++;
                 loadQ();
             };
+
+            function loadQ() {
+                if (state.cur >= state.activeQs.length) return finish();
+                var q = state.activeQs[state.cur];
+                document.getElementById('q-progress').innerText = 'FILE: ' + String(state.cur + 1).padStart(2, '0') + '/' + state.activeQs.length;
+                document.getElementById('q-text').innerText = q.q;
+                var optBox = document.getElementById('q-options');
+                optBox.innerHTML = '';
+                optBox.classList.remove('q-slide');
+                void optBox.offsetWidth;
+                optBox.classList.add('q-slide');
+                var letters = ['A', 'B', 'C', 'D', 'E'];
+                q.options.forEach(function (o, i) {
+                    var d = document.createElement('div');
+                    d.className = 'opt-btn'; d.dataset.idx = i;
+                    d.innerHTML = '<div class="opt-letter">' + (letters[i] || (i + 1)) + '</div><span style="font-size:.95rem">' + o + '</span><input type="radio" name="opt" value="' + i + '" style="display:none">';
+                    d.onclick = function () {
+                        document.querySelectorAll('#q-options .opt-btn').forEach(function (x) { x.classList.remove('opt-selected'); });
+                        d.classList.add('opt-selected');
+                        d.querySelector('input').checked = true;
+                    };
+                    optBox.appendChild(d);
+                });
+                // Progress bar
+                var fill = document.getElementById('q-prog-fill');
+                if (fill) fill.style.width = (state.cur / state.activeQs.length * 100) + '%';
+                state.questionStartTime = Date.now();
+                startTimer();
+            }
+
+            function startTimer() {
+                clearInterval(state.timer);
+                state.time = 30;
+                var numEl = document.getElementById('timer-num');
+                var ring = document.getElementById('timer-ring-fg');
+                var circ = 169.6;
+
+                function updateRing() {
+                    var ratio = state.time / 30;
+                    if (ring) {
+                        ring.style.strokeDashoffset = circ * (1 - ratio);
+                        ring.style.stroke = state.time > 15 ? '#00ff88' : state.time > 8 ? '#ffaa00' : '#ff3333';
+                    }
+                    if (numEl) {
+                        numEl.textContent = state.time;
+                        numEl.style.color = state.time > 8 ? '#fff' : '#ff3333';
+                    }
+                }
+                updateRing();
+                state.timer = setInterval(function () {
+                    state.time--;
+                    updateRing();
+                    if (state.time <= 0) window.handleNext();
+                }, 1000);
+            }
+
+            async function finish() {
+                state.testing = false;
+                clearInterval(state.timer);
+
+                var qIds = state.activeQs.map(function (q) { return q.q_id; });
+
+                try {
+                    var response = await fetch('/api/get-answers', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ q_ids: qIds, mssv: state.studentId })
+                    });
+                    var correctAnswersMap = await response.json();
+
+                    if (correctAnswersMap.error) {
+                        alert('Server báo lỗi: ' + correctAnswersMap.error);
+                        return;
+                    }
+
+                    window.showSection('result');
+                    var correct = 0;
+                    var reviewHtml = '';
+                    var letters = ['A', 'B', 'C', 'D', 'E'];
+
+                    state.activeQs.forEach(function (q, i) {
+                        var userChoice = state.ans[i];
+                        var rightChoice = correctAnswersMap[q.q_id];
+                        var isCorrect = userChoice === rightChoice;
+                        if (isCorrect) {
+                            correct++;
+                            // Spaced repetition: track correct for wrong qs
+                            trackSRCorrect(q.q_id);
+                        } else {
+                            saveWrongQuestion(q, rightChoice, state.currentSubject);
+                            resetSRStreak(q.q_id);
+                        }
+
+                        var userAnsText = userChoice === -1 ? 'Bỏ trống' : q.options[userChoice];
+                        var correctAnsText = q.options[rightChoice] !== undefined ? q.options[rightChoice] : 'N/A';
+
+                        reviewHtml += '<div class="review-card ' + (isCorrect ? 'correct' : 'wrong') + '">' +
+                            '<p class="font-bold text-sm mb-2">' + (i + 1) + '. ' + q.q + '</p>' +
+                            '<p class="text-sm" style="color:' + (isCorrect ? 'var(--neon-green)' : 'var(--neon-red)') + '">▸ Bạn chọn: ' + userAnsText + '</p>' +
+                            (!isCorrect ? '<p class="text-xs mt-1 italic" style="color:var(--accent-1)">▸ Đúng: ' + correctAnsText + '</p>' : '') +
+                            '<div class="mt-2"><button class="btn-ai-explain" onclick="explainResultQuestion(' + i + ')">🤖 Explain with AI</button></div>' +
+                            '<div id="result-explain-' + i + '"></div>' +
+                            '</div>';
+                    });
+
+                    var total = state.activeQs.length;
+
+                    // Submit to server
+                    await fetch('/api/submit', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            user: state.studentName,
+                            mssv: state.studentId,
+                            subject: state.currentSubject,
+                            score: correct + '/' + total,
+                            correct: correct,
+                            total: total,
+                            timestamp: new Date().toISOString(),
+                            status: 'COMPLETED'
+                        })
+                    });
+
+                    // Animate score
+                    var pct = correct / total;
+                    var scoreEl = document.getElementById('res-score');
+                    var ringFg = document.getElementById('score-ring-fg');
+                    var verdict = document.getElementById('res-verdict');
+
+                    if (verdict) {
+                        if (pct >= 0.8) { verdict.textContent = '✅ PASS'; verdict.style.color = 'var(--neon-green)'; }
+                        else if (pct >= 0.5) { verdict.textContent = '⚠️ BORDERLINE'; verdict.style.color = 'var(--neon-yellow)'; }
+                        else { verdict.textContent = '❌ FAIL'; verdict.style.color = 'var(--neon-red)'; }
+                    }
+
+                    if (ringFg) {
+                        ringFg.style.stroke = pct >= 0.8 ? 'var(--neon-green)' : pct >= 0.5 ? 'var(--neon-yellow)' : 'var(--neon-red)';
+                        setTimeout(function () { ringFg.style.strokeDashoffset = 490.1 * (1 - pct); }, 200);
+                    }
+
+                    var cnt = 0;
+                    var si = setInterval(function () {
+                        cnt++;
+                        if (scoreEl) scoreEl.textContent = cnt + '/' + total;
+                        if (cnt >= correct) clearInterval(si);
+                    }, 60);
+
+                    document.getElementById('res-review').innerHTML = reviewHtml;
+                    document.getElementById('r-tabout').textContent = state.tabOuts;
+                    document.getElementById('r-copy').textContent = state.copyAttempts;
+                    document.getElementById('r-rclick').textContent = state.rightClicks;
+                    document.getElementById('r-fast').textContent = state.fastAnswers;
+
+                    runAIAnalysis(correct, total);
+
+                    saveDashEvent('practice', {
+                        subject: state.currentSubject,
+                        total: total,
+                        correct: correct,
+                        wrong: total - correct,
+                        maxStreak: 0,
+                        date: new Date().toISOString()
+                    });
+
+                } catch (error) {
+                    console.error('Lỗi hoàn thành bài thi:', error);
+                    alert('Có lỗi xảy ra khi xử lý kết quả!');
+                }
+            }
+
             async function runAIAnalysis(correct, total) {
-                // 1. Hiện thông báo đang xử lý
                 document.getElementById('ai-loading').classList.remove('hidden');
                 document.getElementById('ai-content').classList.add('hidden');
 
-                const behaviorSummary = {
+                var behaviorSummary = {
                     name: state.studentName,
                     mssv: state.studentId,
-                    score: `${correct}/${total}`,
+                    score: correct + '/' + total,
                     stats: {
                         tabOuts: state.tabOuts,
                         copy: state.copyAttempts,
@@ -975,192 +2612,1048 @@
                 };
 
                 try {
-                    // 2. Gọi lệnh tới Backend
-                    const response = await fetch('/api/analyze-integrity', {
+                    var response = await fetch('/api/analyze-integrity', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(behaviorSummary)
                     });
+                    var data = await response.json();
 
-                    const data = await response.json();
-
-                    // 3. Hiển thị kết quả
                     document.getElementById('ai-loading').classList.add('hidden');
                     document.getElementById('ai-content').classList.remove('hidden');
                     document.getElementById('ai-text').textContent = data.analysis;
 
-                    // Hiệu ứng Cyberpunk cho Verdict [cite: 2026-01-06]
-                    const v = document.getElementById('ai-verdict');
+                    var v = document.getElementById('ai-verdict');
                     if (data.analysis.includes('🚨')) {
-                        v.textContent = "🚨 GIAN LẬN"; v.className = "verdict-cheat";
+                        v.textContent = '🚨 GIAN LẬN'; v.className = 'verdict-cheat';
+                    } else if (data.analysis.includes('⚠️')) {
+                        v.textContent = '⚠️ ĐÁNG NGỜ'; v.className = 'verdict-suspect';
                     } else {
-                        v.textContent = "✅ CLEAN"; v.className = "verdict-clean";
+                        v.textContent = '✅ CLEAN'; v.className = 'verdict-clean';
                     }
-
                 } catch (err) {
-                    document.getElementById('ai-loading').textContent = "⚠️ Không thể kết nối với AI Guard!";
+                    document.getElementById('ai-loading').textContent = '⚠️ Không thể kết nối với AI Guard!';
                 }
             }
-            function loadQ() {
-                if (state.cur >= state.activeQs.length) return finish();
-                const q = state.activeQs[state.cur];
-                document.getElementById('q-progress').innerText = `FILE: ${state.cur + 1}/${state.activeQs.length}`;
-                document.getElementById('q-text').innerText = q.q;
-                const optBox = document.getElementById('q-options');
-                optBox.innerHTML = '';
-                optBox.classList.remove('q-slide');
-                void optBox.offsetWidth; // reflow to restart animation
-                optBox.classList.add('q-slide');
-                const letters = ['A', 'B', 'C', 'D', 'E'];
-                q.options.forEach((o, i) => {
-                    const d = document.createElement('div');
-                    d.className = 'opt-btn'; d.dataset.idx = i;
-                    d.innerHTML = `<div class="opt-letter">${letters[i] || i + 1}</div><span style="font-size:.95rem">${o}</span><input type="radio" name="opt" value="${i}" style="display:none">`;
-                    d.onclick = () => {
-                        document.querySelectorAll('.opt-btn').forEach(x => x.classList.remove('opt-selected'));
-                        d.classList.add('opt-selected'); d.querySelector('input').checked = true;
-                    };
-                    optBox.appendChild(d);
-                });
-                // Update progress bar
-                const fill = document.getElementById('q-prog-fill');
-                if (fill) fill.style.width = (state.cur / state.activeQs.length * 100) + '%';
-                state.questionStartTime = Date.now();
-                startTimer();
-            }
 
-            function startTimer() {
-                clearInterval(state.timer); state.time = 30;
-                const numEl = document.getElementById('timer-num');
-                const ring = document.getElementById('timer-ring-fg');
-                const circ = 169.6;
-                function updateRing() {
-                    const ratio = state.time / 30;
-                    if (ring) { ring.style.strokeDashoffset = circ * (1 - ratio); ring.style.stroke = state.time > 15 ? '#00ff88' : state.time > 8 ? '#ffaa00' : '#ff3333'; }
-                    if (numEl) { numEl.textContent = state.time; numEl.style.color = state.time > 8 ? '#fff' : '#ff3333'; }
-                }
-                updateRing();
-                state.timer = setInterval(() => { state.time--; updateRing(); if (state.time <= 0) window.handleNext(); }, 1000);
-            }
+            // ============================================================
+            // 10. AI EXPLAIN MODULE
+            // ============================================================
+            window.explainResultQuestion = async function (idx) {
+                var q = state.activeQs[idx];
+                if (!q) return;
+                var container = document.getElementById('result-explain-' + idx);
+                if (!container) return;
+                if (container.innerHTML) { container.innerHTML = ''; return; } // toggle
 
-            async function finish() {
-                state.testing = false;
-                clearInterval(state.timer);
+                var correctIdx = null;
+                try {
+                    var response = await fetch('/api/get-answers', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ q_ids: [q.q_id], mssv: state.studentId })
+                    });
+                    var ansMap = await response.json();
+                    correctIdx = ansMap[q.q_id];
+                } catch (e) { }
 
-                // 1. Chuẩn bị danh sách ID để hỏi đáp án
-                const qIds = state.activeQs.map(q => q.q_id);
+                container.innerHTML = '<div class="ai-explain-box"><span class="dot-pulse" style="color:var(--text-muted)">Đang hỏi AI</span></div>';
 
                 try {
-                    // 2. GỬI KẾT QUẢ LÊN SERVER TRƯỚC (Để vượt qua lớp bảo mật finished_test)
-                    // Lưu ý: Chúng ta gửi thông tin cơ bản để Server ghi nhận đã thi xong
-                    await fetch('/api/submit', {
+                    var res = await fetch('/api/explain', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            user: state.studentName,
-                            mssv: state.studentId,
-                            timestamp: new Date().toISOString(),
-                            status: "COMPLETED"
+                            question: q.q,
+                            options: q.options,
+                            correct_answer: correctIdx !== null ? q.options[correctIdx] : 'N/A',
+                            user_answer: state.ans[idx] >= 0 ? q.options[state.ans[idx]] : 'Bỏ trống'
                         })
                     });
-
-                    // 3. LẤY ĐÁP ÁN ĐÚNG (Nhớ gửi kèm mssv để Server xác thực)
-                    const response = await fetch('/api/get-answers', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            q_ids: qIds,
-                            mssv: state.studentId
-                        })
-                    });
-
-                    const correctAnswersMap = await response.json();
-
-                    // Debug nhanh cho cậu chủ: Xem bảng đáp án trong Console (F12)
-                    console.log("Dữ liệu đáp án từ Server:", correctAnswersMap);
-
-                    if (correctAnswersMap.error) {
-                        alert("Dạ thưa cậu chủ, Server báo lỗi: " + correctAnswersMap.error);
-                        return;
-                    }
-
-                    // 4. HIỂN THỊ KẾT QUẢ
-                    window.showSection('result');
-                    let correct = 0;
-                    let reviewHtml = '';
-
-                    state.activeQs.forEach((q, i) => {
-                        const userChoice = state.ans[i];
-                        // Lấy đáp án đúng từ Map dựa trên q_id
-                        const rightChoice = correctAnswersMap[q.q_id];
-
-                        // So sánh lựa chọn của người dùng với đáp án đúng
-                        const isCorrect = userChoice === rightChoice;
-                        if (isCorrect) correct++;
-
-                        reviewHtml += `<div class="review-card ${isCorrect ? 'correct' : 'wrong'}">
-                <p class="font-bold text-sm mb-2">${i + 1}. ${q.q}</p>
-                <p class="${isCorrect ? 'text-green-400' : 'text-red-400'} text-sm">▸ Bạn chọn: ${userChoice === -1 ? 'Bỏ trống' : q.options[userChoice]}</p>
-                ${!isCorrect ? `<p class="text-cyan-500 text-xs mt-1 italic">▸ Đúng: ${q.options[rightChoice] !== undefined ? q.options[rightChoice] : 'N/A'}</p>` : ''}
-            </div>`;
-                    });
-
-                    // Animate score counter + ring
-                    const total = state.activeQs.length;
-                    const pct = correct / total;
-                    const scoreEl = document.getElementById('res-score');
-                    const ringFg = document.getElementById('score-ring-fg');
-                    const verdict = document.getElementById('res-verdict');
-                    if (verdict) {
-                        if (pct >= 0.8) { verdict.textContent = '✅ PASS'; verdict.style.color = '#00ff88'; }
-                        else if (pct >= 0.5) { verdict.textContent = '⚠️ BORDERLINE'; verdict.style.color = '#ffaa00'; }
-                        else { verdict.textContent = '❌ FAIL'; verdict.style.color = '#ff3333'; }
-                    }
-                    if (ringFg) {
-                        ringFg.style.stroke = pct >= 0.8 ? '#00ff88' : pct >= 0.5 ? '#ffaa00' : '#ff3333';
-                        setTimeout(() => { ringFg.style.strokeDashoffset = 439.8 * (1 - pct); }, 200);
-                    }
-                    let cnt = 0;
-                    const si = setInterval(() => { cnt++; if (scoreEl) scoreEl.textContent = `${cnt}/${total}`; if (cnt >= correct) clearInterval(si); }, 60);
-                    document.getElementById('res-review').innerHTML = reviewHtml;
-
-                    // Cập nhật các chỉ số hành vi[cite: 1]
-                    document.getElementById('r-tabout').textContent = state.tabOuts;
-                    document.getElementById('r-copy').textContent = state.copyAttempts;
-                    document.getElementById('r-rclick').textContent = state.rightClicks;
-                    document.getElementById('r-fast').textContent = state.fastAnswers;
-
-                    // Chạy AI phân tích tính liêm chính
-                    runAIAnalysis(correct, state.activeQs.length);
-
-                } catch (error) {
-                    console.error("Lỗi hoàn thành bài thi:", error);
-                    alert("Dạ thưa cậu chủ, có lỗi xảy ra khi xử lý kết quả ạ!");
+                    var data = await res.json();
+                    container.innerHTML = '<div class="ai-explain-box">' + (data.explanation || 'Không có giải thích.') + '</div>';
+                } catch (err) {
+                    container.innerHTML = '<div class="ai-explain-box" style="color:var(--neon-red)">⚠️ Không thể kết nối AI.</div>';
                 }
-            }
-
-            window.saveJSON = function () {
-                try {
-                    state.bank = JSON.parse(document.getElementById('json-input').value);
-                    alert(`Đã nạp ${state.bank.length} câu hỏi!`); window.showSection('home');
-                } catch (e) { alert('Lỗi JSON!'); }
             };
 
+            window.explainPracticeQuestion = async function () {
+                var q = pracState.qs[pracState.cur];
+                if (!q) return;
+                var container = document.getElementById('prac-explain-container');
+                if (!container) return;
 
-            window.onload = () => {
-                const canvas = document.getElementById('matrix-canvas');
-                const ctx = canvas.getContext('2d');
-                const drops = Array(Math.floor(canvas.width / 15)).fill(1);
-                setInterval(() => {
-                    ctx.fillStyle = "rgba(2,2,5,0.05)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-                    ctx.fillStyle = "#0ff";
-                    drops.forEach((y, i) => {
-                        ctx.fillText(Math.random() > 0.5 ? "0" : "1", i * 15, y * 15);
-                        if (y * 15 > canvas.height && Math.random() > 0.98) drops[i] = 0;
+                container.classList.remove('hidden');
+                container.innerHTML = '<div class="ai-explain-box mt-4"><span class="dot-pulse" style="color:var(--text-muted)">Đang hỏi AI</span></div>';
+
+                var btn = document.getElementById('prac-explain-btn');
+                if (btn) { btn.disabled = true; btn.textContent = '⏳ Loading...'; }
+
+                try {
+                    var res = await fetch('/api/explain', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            question: q.q,
+                            options: q.options,
+                            correct_answer: q.ansIdx !== undefined ? q.options[q.ansIdx] : 'N/A',
+                            user_answer: pracState.lastChoice >= 0 ? q.options[pracState.lastChoice] : 'Bỏ trống'
+                        })
+                    });
+                    var data = await res.json();
+                    container.innerHTML = '<div class="ai-explain-box mt-4">' + (data.explanation || 'Không có giải thích.') + '</div>';
+                } catch (err) {
+                    container.innerHTML = '<div class="ai-explain-box mt-4" style="color:var(--neon-red)">⚠️ Không thể kết nối AI.</div>';
+                }
+                if (btn) { btn.disabled = false; btn.textContent = '🤖 Explain with AI'; }
+            };
+
+            function openExplainModal(question, options, correctAnswer, userAnswer) {
+                var modal = document.getElementById('ai-explain-modal');
+                var content = document.getElementById('ai-explain-content');
+                modal.classList.remove('hidden');
+                content.innerHTML = '<div class="dot-pulse" style="color:var(--text-muted)">Đang hỏi AI</div>';
+
+                fetch('/api/explain', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        question: question,
+                        options: options,
+                        correct_answer: correctAnswer,
+                        user_answer: userAnswer
+                    })
+                }).then(function (r) { return r.json(); }).then(function (data) {
+                    content.textContent = data.explanation || 'Không có giải thích.';
+                }).catch(function () {
+                    content.innerHTML = '<span style="color:var(--neon-red)">⚠️ Không thể kết nối AI.</span>';
+                });
+            }
+
+            window.closeExplainModal = function () {
+                document.getElementById('ai-explain-modal').classList.add('hidden');
+            };
+
+            // ============================================================
+            // 11. FLASHCARD MODULE
+            // ============================================================
+            var fcState = { cards: [], cur: 0, seen: new Set(), known: new Set() };
+
+            window.loadFlashCards = async function () {
+                var subj = document.getElementById('fc-subject').value;
+                if (subj === 'wrong_questions') {
+                    var userId = state.studentId || 'guest';
+                    var key = 'uet_wrong_qs_' + userId;
+                    var wrongQs = [];
+                    try { wrongQs = JSON.parse(localStorage.getItem(key) || '[]'); } catch (e) { wrongQs = []; }
+                    if (wrongQs.length === 0) {
+                        alert('Chưa có câu hỏi sai nào! Hãy làm bài thi hoặc luyện tập trước.');
+                        return;
+                    }
+                    fcState.cards = wrongQs.map(function (q) { return { q: q.q, options: q.options, ansIdx: q.ansIdx, q_id: q.q_id }; });
+                    fcState.cards.sort(function () { return 0.5 - Math.random(); });
+                    fcState.cur = 0; fcState.seen = new Set(); fcState.known = new Set();
+                    renderFC();
+                    saveDashEvent('cards_loaded', { subject: subj, count: fcState.cards.length });
+                    return;
+                }
+
+                try {
+                    var qs = await fetchDecryptedQuestions(subj);
+                    var qIds = qs.map(function (q) { return q.q_id; });
+                    var ansRes = await fetch('/api/get-answers', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ q_ids: qIds, mssv: 'flashcard' })
+                    });
+                    var ansMap = await ansRes.json();
+                    fcState.cards = qs.map(function (q) { return { q: q.q, options: q.options, ansIdx: ansMap[q.q_id], q_id: q.q_id }; });
+                    fcState.cards.sort(function () { return 0.5 - Math.random(); });
+                    fcState.cur = 0; fcState.seen = new Set(); fcState.known = new Set();
+                    renderFC();
+                    saveDashEvent('cards_loaded', { subject: subj, count: fcState.cards.length });
+                } catch (e) { alert('Lỗi tải thẻ: ' + e.message); }
+            };
+
+            window.shuffleFlashCards = function () {
+                if (!fcState.cards.length) return;
+                fcState.cards.sort(function () { return 0.5 - Math.random(); });
+                fcState.cur = 0; fcState.seen = new Set();
+                renderFC();
+            };
+
+            window.flipCard = function () {
+                document.getElementById('fc-card').classList.toggle('flipped');
+            };
+
+            window.fcPrev = function () { if (fcState.cur > 0) { fcState.cur--; renderFC(); } };
+            window.fcNext = function () { if (fcState.cur < fcState.cards.length - 1) { fcState.cur++; renderFC(); } };
+
+            window.fcMarkKnown = function () {
+                fcState.known.add(fcState.cur);
+                fcState.seen.add(fcState.cur);
+                var currentCard = fcState.cards[fcState.cur];
+                if (currentCard && currentCard.q_id) {
+                    saveDashEvent('card_known', { q_id: currentCard.q_id });
+                    var subj = document.getElementById('fc-subject').value;
+                    if (subj === 'wrong_questions') {
+                        trackSRCorrect(currentCard.q_id);
+                    }
+                }
+                if (fcState.cur < fcState.cards.length - 1) { fcState.cur++; }
+                renderFC();
+            };
+
+            window.fcMarkUnknown = function () {
+                fcState.known.delete(fcState.cur);
+                fcState.seen.add(fcState.cur);
+                if (fcState.cur < fcState.cards.length - 1) { fcState.cur++; }
+                renderFC();
+            };
+
+            function renderFC() {
+                var c = fcState.cards[fcState.cur];
+                if (!c) return;
+                fcState.seen.add(fcState.cur);
+                document.getElementById('fc-card').classList.remove('flipped');
+                document.getElementById('fc-question').textContent = c.q;
+                var ansText = (c.ansIdx !== undefined && c.options[c.ansIdx]) ? c.options[c.ansIdx] : 'N/A';
+                document.getElementById('fc-answer').textContent = ansText;
+                document.getElementById('fc-current').textContent = fcState.cur + 1;
+                document.getElementById('fc-total').textContent = fcState.cards.length;
+
+                // Progress dots
+                var dotsEl = document.getElementById('fc-dots');
+                var dotsHtml = '<div class="fc-progress-dots">';
+                for (var i = 0; i < fcState.cards.length; i++) {
+                    var cls = 'fc-dot';
+                    if (i === fcState.cur) cls += ' active';
+                    else if (fcState.known.has(i)) cls += ' seen';
+                    else if (fcState.seen.has(i)) cls += ' seen';
+                    dotsHtml += '<div class="' + cls + '" data-fc-idx="' + i + '"></div>';
+                }
+                dotsHtml += '</div>';
+                dotsEl.innerHTML = dotsHtml;
+
+                // Add click handlers
+                dotsEl.querySelectorAll('.fc-dot').forEach(function (dot) {
+                    dot.onclick = function () {
+                        fcState.cur = parseInt(dot.dataset.fcIdx);
+                        renderFC();
+                    };
+                });
+
+                var badge = document.getElementById('fc-streak-badge');
+                badge.textContent = '✓ ' + fcState.known.size + '/' + fcState.cards.length;
+                badge.classList.remove('hidden');
+            }
+
+            // ============================================================
+            // 12. PRACTICE MODULE
+            // ============================================================
+            var pracState = {
+                qs: [], cur: 0, correct: 0, wrong: 0, streak: 0, maxStreak: 0,
+                answered: false, subject: '', lastChoice: -1, results: []
+            };
+
+            window.startPractice = async function () {
+                var subj = document.getElementById('prac-subject').value;
+                pracState.subject = subj;
+                try {
+                    var qs = await fetchDecryptedQuestions(subj);
+                    var qIds = qs.map(function (q) { return q.q_id; });
+                    var ansRes = await fetch('/api/get-answers', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ q_ids: qIds, mssv: 'practice' })
+                    });
+                    var ansMap = await ansRes.json();
+                    pracState.qs = qs.map(function (q) { return Object.assign({}, q, { ansIdx: ansMap[q.q_id] }); }).sort(function () { return 0.5 - Math.random(); });
+                    pracState.cur = 0; pracState.correct = 0; pracState.wrong = 0;
+                    pracState.streak = 0; pracState.maxStreak = 0; pracState.answered = false;
+                    pracState.lastChoice = -1; pracState.results = [];
+                    document.getElementById('prac-stats').classList.remove('hidden');
+                    document.getElementById('prac-card').classList.remove('hidden');
+                    document.getElementById('prac-summary').classList.add('hidden');
+                    renderPractice();
+                } catch (e) { alert('Lỗi tải đề: ' + e.message); }
+            };
+
+            function renderPractice() {
+                if (pracState.cur >= pracState.qs.length) return finishPractice();
+                pracState.answered = false;
+                pracState.lastChoice = -1;
+                var q = pracState.qs[pracState.cur];
+                document.getElementById('prac-progress').textContent = 'PRACTICE: ' + String(pracState.cur + 1).padStart(2, '0') + '/' + pracState.qs.length;
+                document.getElementById('prac-q-text').textContent = q.q;
+                document.getElementById('prac-cur').textContent = pracState.cur + 1;
+                document.getElementById('prac-total').textContent = pracState.qs.length;
+                document.getElementById('prac-correct').textContent = pracState.correct;
+                document.getElementById('prac-wrong').textContent = pracState.wrong;
+                document.getElementById('prac-streak').textContent = '🔥 ' + pracState.streak;
+                document.getElementById('prac-feedback').classList.add('hidden');
+                document.getElementById('prac-next-btn').classList.add('hidden');
+                document.getElementById('prac-explain-btn').classList.add('hidden');
+                document.getElementById('prac-explain-container').classList.add('hidden');
+                document.getElementById('prac-explain-container').innerHTML = '';
+
+                var optBox = document.getElementById('prac-options');
+                optBox.innerHTML = '';
+                var letters = ['A', 'B', 'C', 'D', 'E'];
+                q.options.forEach(function (o, i) {
+                    var d = document.createElement('div');
+                    d.className = 'practice-opt'; d.dataset.idx = i;
+                    d.innerHTML = '<div class="opt-letter">' + (letters[i] || (i + 1)) + '</div><span style="font-size:.95rem">' + o + '</span>';
+                    d.onclick = function () { practiceSelect(i); };
+                    optBox.appendChild(d);
+                });
+            }
+
+            function practiceSelect(idx) {
+                if (pracState.answered) return;
+                pracState.answered = true;
+                pracState.lastChoice = idx;
+                var q = pracState.qs[pracState.cur];
+                var correct = q.ansIdx;
+                var opts = document.querySelectorAll('#prac-options .practice-opt');
+                opts.forEach(function (o) { o.classList.add('p-disabled'); });
+
+                var isCorrect = (idx === correct);
+                if (isCorrect) {
+                    opts[idx].classList.add('p-correct');
+                    pracState.correct++; pracState.streak++;
+                    if (pracState.streak > pracState.maxStreak) pracState.maxStreak = pracState.streak;
+                    showPracFeedback(true, q.options[correct]);
+                    trackSRCorrect(q.q_id);
+                } else {
+                    opts[idx].classList.add('p-wrong');
+                    if (correct !== undefined && opts[correct]) opts[correct].classList.add('p-answer');
+                    pracState.wrong++; pracState.streak = 0;
+                    showPracFeedback(false, q.options[correct] || 'N/A');
+                    saveWrongQuestion(q, correct, pracState.subject);
+                    resetSRStreak(q.q_id);
+                }
+
+                pracState.results.push({
+                    q: q.q, options: q.options, userChoice: idx, correctChoice: correct, isCorrect: isCorrect, q_id: q.q_id
+                });
+
+                document.getElementById('prac-correct').textContent = pracState.correct;
+                document.getElementById('prac-wrong').textContent = pracState.wrong;
+                document.getElementById('prac-streak').textContent = '🔥 ' + pracState.streak;
+                document.getElementById('prac-next-btn').classList.remove('hidden');
+                document.getElementById('prac-explain-btn').classList.remove('hidden');
+            }
+
+            function showPracFeedback(isCorrect, correctText) {
+                var fb = document.getElementById('prac-feedback');
+                fb.classList.remove('hidden');
+                fb.style.background = isCorrect ? 'rgba(0,255,136,.08)' : 'rgba(255,51,51,.08)';
+                fb.style.border = isCorrect ? '1px solid rgba(0,255,136,.2)' : '1px solid rgba(255,51,51,.2)';
+                fb.innerHTML = isCorrect
+                    ? '<span style="color:var(--neon-green);font-weight:700">✓ Chính xác!</span>'
+                    : '<span style="color:var(--neon-red);font-weight:700">✗ Sai!</span> <span style="color:var(--text-muted);margin-left:8px">Đáp án đúng: <span style="color:var(--accent-1)">' + correctText + '</span></span>';
+            }
+
+            window.practiceNext = function () {
+                pracState.cur++;
+                renderPractice();
+            };
+
+            function finishPractice() {
+                document.getElementById('prac-card').classList.add('hidden');
+                document.getElementById('prac-summary').classList.remove('hidden');
+                document.getElementById('prac-s-total').textContent = pracState.qs.length;
+                document.getElementById('prac-s-correct').textContent = pracState.correct;
+                document.getElementById('prac-s-wrong').textContent = pracState.wrong;
+
+                // Build summary review
+                var reviewHtml = '';
+                pracState.results.forEach(function (r, i) {
+                    var userAns = r.userChoice >= 0 ? r.options[r.userChoice] : 'Bỏ trống';
+                    var correctAns = r.options[r.correctChoice] || 'N/A';
+                    reviewHtml += '<div class="review-card ' + (r.isCorrect ? 'correct' : 'wrong') + '">' +
+                        '<p class="font-bold text-sm mb-1">' + (i + 1) + '. ' + r.q + '</p>' +
+                        '<p class="text-xs" style="color:' + (r.isCorrect ? 'var(--neon-green)' : 'var(--neon-red)') + '">▸ ' + userAns + '</p>' +
+                        (!r.isCorrect ? '<p class="text-xs italic" style="color:var(--accent-1)">▸ Đúng: ' + correctAns + '</p>' : '') +
+                        '<div class="mt-2"><button class="btn-ai-explain" onclick="explainPracSummary(' + i + ')">🤖 Explain</button></div>' +
+                        '<div id="prac-sum-explain-' + i + '"></div>' +
+                        '</div>';
+                });
+                document.getElementById('prac-summary-review').innerHTML = reviewHtml;
+
+                saveDashEvent('practice', {
+                    subject: pracState.subject,
+                    total: pracState.qs.length,
+                    correct: pracState.correct,
+                    wrong: pracState.wrong,
+                    maxStreak: pracState.maxStreak,
+                    date: new Date().toISOString()
+                });
+            }
+
+            window.explainPracSummary = async function (idx) {
+                var r = pracState.results[idx];
+                if (!r) return;
+                var container = document.getElementById('prac-sum-explain-' + idx);
+                if (!container) return;
+                if (container.innerHTML) { container.innerHTML = ''; return; }
+
+                container.innerHTML = '<div class="ai-explain-box"><span class="dot-pulse" style="color:var(--text-muted)">Đang hỏi AI</span></div>';
+
+                try {
+                    var res = await fetch('/api/explain', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            question: r.q,
+                            options: r.options,
+                            correct_answer: r.options[r.correctChoice] || 'N/A',
+                            user_answer: r.userChoice >= 0 ? r.options[r.userChoice] : 'Bỏ trống'
+                        })
+                    });
+                    var data = await res.json();
+                    container.innerHTML = '<div class="ai-explain-box">' + (data.explanation || 'Không có giải thích.') + '</div>';
+                } catch (err) {
+                    container.innerHTML = '<div class="ai-explain-box" style="color:var(--neon-red)">⚠️ Không thể kết nối AI.</div>';
+                }
+            };
+
+            // ============================================================
+            // 13. SPACED REPETITION MODULE
+            // ============================================================
+            function getSRKey() {
+                return 'uet_sr_' + (state.studentId || 'guest');
+            }
+
+            function getSRData() {
+                try { return JSON.parse(localStorage.getItem(getSRKey()) || '{}'); }
+                catch (e) { return {}; }
+            }
+
+            function setSRData(data) {
+                localStorage.setItem(getSRKey(), JSON.stringify(data));
+            }
+
+            function trackSRCorrect(q_id) {
+                if (!q_id) return;
+                var sr = getSRData();
+                if (!sr[q_id]) sr[q_id] = { streak: 0, mastered: false };
+                sr[q_id].streak++;
+                if (sr[q_id].streak >= 2) {
+                    sr[q_id].mastered = true;
+                    removeWrongQuestion(q_id);
+                    liveLog('🎓 Câu ' + q_id + ' đã MASTERED (2 lần đúng liên tiếp)', 'ok');
+                }
+                setSRData(sr);
+            }
+
+            function resetSRStreak(q_id) {
+                if (!q_id) return;
+                var sr = getSRData();
+                if (sr[q_id]) {
+                    sr[q_id].streak = 0;
+                    sr[q_id].mastered = false;
+                }
+                setSRData(sr);
+            }
+
+            // ============================================================
+            // 14. WRONG QUESTION BANK
+            // ============================================================
+            function getWrongQKey() {
+                return 'uet_wrong_qs_' + (state.studentId || 'guest');
+            }
+
+            function saveWrongQuestion(q, rightChoiceIdx, subjectVal) {
+                var key = getWrongQKey();
+                var wrongQs = [];
+                try { wrongQs = JSON.parse(localStorage.getItem(key) || '[]'); } catch (e) { wrongQs = []; }
+                if (!wrongQs.some(function (item) { return item.q_id === q.q_id; })) {
+                    wrongQs.push({
+                        q_id: q.q_id,
+                        q: q.q,
+                        options: q.options,
+                        ansIdx: rightChoiceIdx,
+                        subject: subjectVal || 'unknown',
+                        timestamp: Date.now()
+                    });
+                    localStorage.setItem(key, JSON.stringify(wrongQs));
+                }
+            }
+
+            function removeWrongQuestion(q_id) {
+                var key = getWrongQKey();
+                try {
+                    var wrongQs = JSON.parse(localStorage.getItem(key) || '[]');
+                    wrongQs = wrongQs.filter(function (item) { return item.q_id !== q_id; });
+                    localStorage.setItem(key, JSON.stringify(wrongQs));
+                } catch (e) { }
+            }
+
+            window.learnWrongFlashcards = function () {
+                var select = document.getElementById('fc-subject');
+                if (select) select.value = 'wrong_questions';
+                window.showSection('flashcard');
+                window.loadFlashCards();
+            };
+
+            // ============================================================
+            // 15. DASHBOARD MODULE
+            // ============================================================
+            function getDashKey() {
+                return 'uet_dash_' + (state.studentId || 'guest');
+            }
+
+            function getDashData() {
+                try { return JSON.parse(localStorage.getItem(getDashKey()) || '{"events":[],"streak":0,"lastDate":""}'); }
+                catch (e) { return { events: [], streak: 0, lastDate: '' }; }
+            }
+
+            function setDashData(d) {
+                localStorage.setItem(getDashKey(), JSON.stringify(d));
+            }
+
+            function saveDashEvent(type, data) {
+                var d = getDashData();
+                d.events.push(Object.assign({ type: type, ts: Date.now() }, data));
+                var today = new Date().toDateString();
+                if (d.lastDate !== today) {
+                    var yesterday = new Date(Date.now() - 86400000).toDateString();
+                    d.streak = (d.lastDate === yesterday) ? d.streak + 1 : 1;
+                    d.lastDate = today;
+                }
+                setDashData(d);
+            }
+
+            window.clearDashboard = function () {
+                if (confirm('Xoá toàn bộ dữ liệu dashboard, câu hỏi sai và spaced repetition?')) {
+                    localStorage.removeItem(getDashKey());
+                    localStorage.removeItem(getWrongQKey());
+                    localStorage.removeItem(getSRKey());
+                    refreshDashboard();
+                }
+            };
+
+            function refreshDashboard() {
+                var d = getDashData();
+                var practices = d.events.filter(function (e) { return e.type === 'practice'; });
+                var quizCount = practices.length;
+                var totalCorrect = 0, totalQs = 0;
+                var subjectStats = {};
+
+                practices.forEach(function (p) {
+                    totalCorrect += (p.correct || 0);
+                    totalQs += (p.total || 0);
+                    if (p.subject) {
+                        if (!subjectStats[p.subject]) subjectStats[p.subject] = { correct: 0, total: 0 };
+                        subjectStats[p.subject].correct += (p.correct || 0);
+                        subjectStats[p.subject].total += (p.total || 0);
+                    }
+                });
+
+                var cardEvents = d.events.filter(function (e) { return e.type === 'card_known'; }).length;
+                var accuracy = totalQs > 0 ? Math.round(totalCorrect / totalQs * 100) : 0;
+
+                document.getElementById('dash-quizzes').textContent = quizCount;
+                document.getElementById('dash-accuracy').textContent = accuracy + '%';
+                document.getElementById('dash-cards').textContent = cardEvents;
+                document.getElementById('dash-streak').textContent = d.streak || 0;
+
+                // Wrong count
+                var wrongQs = [];
+                try { wrongQs = JSON.parse(localStorage.getItem(getWrongQKey()) || '[]'); } catch (e) { }
+                document.getElementById('dash-wrong-count').textContent = wrongQs.length;
+
+                // Subject bars (dynamic)
+                var barsHtml = '';
+                var colors = ['var(--accent-1)', 'var(--accent-2)', 'var(--neon-green)', 'var(--neon-yellow)', 'var(--neon-orange)'];
+                var ci = 0;
+                state.subjects.forEach(function (subj) {
+                    var stats = subjectStats[subj] || { correct: 0, total: 0 };
+                    var pct = stats.total > 0 ? Math.round(stats.correct / stats.total * 100) : 0;
+                    var color = colors[ci % colors.length]; ci++;
+                    barsHtml += '<div>' +
+                        '<div class="flex justify-between text-sm mb-1"><span style="color:var(--text-secondary)">' + formatSubjectName(subj) + '</span><span style="color:' + color + '">' + pct + '%</span></div>' +
+                        '<div class="dash-bar"><div class="dash-bar-fill" style="width:' + pct + '%;background:' + color + '"></div></div>' +
+                        '</div>';
+                });
+                document.getElementById('dash-subject-bars').innerHTML = barsHtml || '<div class="text-sm italic" style="color:var(--text-muted)">Chưa có dữ liệu</div>';
+
+                // History
+                var histEl = document.getElementById('dash-history');
+                if (practices.length === 0) {
+                    histEl.innerHTML = '<div class="text-sm italic" style="color:var(--text-muted)">Chưa có dữ liệu</div>';
+                } else {
+                    histEl.innerHTML = practices.slice(-10).reverse().map(function (p) {
+                        var pct = p.total > 0 ? Math.round(p.correct / p.total * 100) : 0;
+                        var color = pct >= 80 ? 'var(--neon-green)' : pct >= 50 ? 'var(--neon-yellow)' : 'var(--neon-red)';
+                        var date = p.date ? new Date(p.date).toLocaleDateString('vi-VN') : '';
+                        return '<div class="dash-history-row">' +
+                            '<span class="text-xs w-20" style="color:var(--text-muted)">' + date + '</span>' +
+                            '<span class="text-xs w-16" style="color:var(--text-muted)">' + formatSubjectName(p.subject || '') + '</span>' +
+                            '<div class="dash-mini-bar"><div class="dash-mini-fill" style="width:' + pct + '%;background:' + color + '"></div></div>' +
+                            '<span class="text-xs font-bold" style="color:' + color + '">' + p.correct + '/' + p.total + '</span>' +
+                            '</div>';
+                    }).join('');
+                }
+
+                // Integrity Score (SVG ring)
+                drawIntegrityScore();
+                // Radar Chart
+                drawRadarChart();
+            }
+
+            function drawIntegrityScore() {
+                var d = getDashData();
+                var practices = d.events.filter(function (e) { return e.type === 'practice'; });
+                var totalCorrect = 0, totalQs = 0;
+                practices.forEach(function (p) { totalCorrect += (p.correct || 0); totalQs += (p.total || 0); });
+                var accuracy = totalQs > 0 ? totalCorrect / totalQs : 0;
+
+                // Integrity score based on accuracy & no violations
+                var wrongQs = [];
+                try { wrongQs = JSON.parse(localStorage.getItem(getWrongQKey()) || '[]'); } catch (e) { }
+                var wrongRatio = wrongQs.length > 0 ? Math.min(wrongQs.length / 20, 1) : 0;
+                var score = Math.round(Math.max(0, Math.min(100, accuracy * 80 + (1 - wrongRatio) * 20)));
+
+                var svg = document.getElementById('integrity-svg');
+                var scoreColor = score >= 80 ? 'var(--neon-green)' : score >= 50 ? 'var(--neon-yellow)' : 'var(--neon-red)';
+                var r = 80;
+                var circ = 2 * Math.PI * r;
+                var offset = circ * (1 - score / 100);
+
+                svg.innerHTML = '<circle cx="100" cy="100" r="' + r + '" style="fill:none;stroke:rgba(255,255,255,0.05);stroke-width:12"/>' +
+                    '<circle cx="100" cy="100" r="' + r + '" style="fill:none;stroke:' + scoreColor + ';stroke-width:12;stroke-linecap:round;stroke-dasharray:' + circ + ';stroke-dashoffset:' + offset + ';transition:stroke-dashoffset 1.5s cubic-bezier(0.4,0,0.2,1);transform:rotate(-90deg);transform-origin:center"/>';
+
+                var numEl = document.getElementById('integrity-score-num');
+                numEl.textContent = score;
+                numEl.style.color = scoreColor;
+            }
+
+            function drawRadarChart() {
+                var d = getDashData();
+                var practices = d.events.filter(function (e) { return e.type === 'practice'; });
+                var totalCorrect = 0, totalQs = 0;
+                practices.forEach(function (p) { totalCorrect += (p.correct || 0); totalQs += (p.total || 0); });
+                var accuracy = totalQs > 0 ? totalCorrect / totalQs : 0;
+                var consistency = practices.length > 0 ? Math.min(practices.length / 10, 1) : 0;
+                var streakScore = Math.min((d.streak || 0) / 7, 1);
+
+                var wrongQs = [];
+                try { wrongQs = JSON.parse(localStorage.getItem(getWrongQKey()) || '[]'); } catch (e) { }
+                var srData = getSRData();
+                var masteredCount = 0;
+                Object.keys(srData).forEach(function (k) { if (srData[k].mastered) masteredCount++; });
+                var retentionScore = wrongQs.length > 0 ? Math.min(masteredCount / Math.max(wrongQs.length, 1), 1) : (totalQs > 0 ? accuracy : 0);
+                var speedScore = practices.length > 0 ? 0.7 : 0;
+
+                var metrics = [
+                    { label: 'Accuracy', value: accuracy, color: 'var(--neon-green)' },
+                    { label: 'Consistency', value: consistency, color: 'var(--accent-1)' },
+                    { label: 'Streak', value: streakScore, color: 'var(--neon-yellow)' },
+                    { label: 'Retention', value: retentionScore, color: 'var(--accent-2)' },
+                    { label: 'Speed', value: speedScore, color: 'var(--neon-orange)' }
+                ];
+
+                var svg = document.getElementById('radar-chart');
+                var cx = 100, cy = 100, maxR = 75;
+                var n = metrics.length;
+                var svgContent = '';
+
+                // Grid
+                for (var ring = 1; ring <= 4; ring++) {
+                    var r = maxR * ring / 4;
+                    var points = [];
+                    for (var i = 0; i < n; i++) {
+                        var angle = (Math.PI * 2 * i / n) - Math.PI / 2;
+                        points.push((cx + r * Math.cos(angle)).toFixed(1) + ',' + (cy + r * Math.sin(angle)).toFixed(1));
+                    }
+                    svgContent += '<polygon points="' + points.join(' ') + '" style="fill:none;stroke:rgba(255,255,255,0.06);stroke-width:1"/>';
+                }
+
+                // Axes
+                for (var i = 0; i < n; i++) {
+                    var angle = (Math.PI * 2 * i / n) - Math.PI / 2;
+                    var ex = cx + maxR * Math.cos(angle);
+                    var ey = cy + maxR * Math.sin(angle);
+                    svgContent += '<line x1="' + cx + '" y1="' + cy + '" x2="' + ex.toFixed(1) + '" y2="' + ey.toFixed(1) + '" style="stroke:rgba(255,255,255,0.06);stroke-width:1"/>';
+
+                    // Label
+                    var lx = cx + (maxR + 15) * Math.cos(angle);
+                    var ly = cy + (maxR + 15) * Math.sin(angle);
+                    svgContent += '<text x="' + lx.toFixed(1) + '" y="' + ly.toFixed(1) + '" text-anchor="middle" dominant-baseline="middle" style="fill:rgba(255,255,255,0.3);font-size:8px;font-family:Chakra Petch">' + metrics[i].label + '</text>';
+                }
+
+                // Data polygon
+                var dataPoints = [];
+                for (var i = 0; i < n; i++) {
+                    var angle = (Math.PI * 2 * i / n) - Math.PI / 2;
+                    var r = maxR * metrics[i].value;
+                    dataPoints.push((cx + r * Math.cos(angle)).toFixed(1) + ',' + (cy + r * Math.sin(angle)).toFixed(1));
+                }
+                svgContent += '<polygon points="' + dataPoints.join(' ') + '" style="fill:rgba(0,242,255,0.1);stroke:var(--accent-1);stroke-width:2"/>';
+
+                // Data points
+                for (var i = 0; i < n; i++) {
+                    var angle = (Math.PI * 2 * i / n) - Math.PI / 2;
+                    var r = maxR * metrics[i].value;
+                    var px = cx + r * Math.cos(angle);
+                    var py = cy + r * Math.sin(angle);
+                    svgContent += '<circle cx="' + px.toFixed(1) + '" cy="' + py.toFixed(1) + '" r="3" style="fill:var(--accent-1);stroke:#fff;stroke-width:1"/>';
+                }
+
+                svg.innerHTML = svgContent;
+
+                // Legend
+                var legendEl = document.getElementById('radar-legend');
+                legendEl.innerHTML = metrics.map(function (m) {
+                    return '<div class="flex items-center gap-2"><div style="width:8px;height:8px;border-radius:50%;background:' + m.color + '"></div><span style="color:var(--text-muted)">' + m.label + ': ' + Math.round(m.value * 100) + '%</span></div>';
+                }).join('');
+            }
+
+            // ============================================================
+            // 16. ADMIN MODULE
+            // ============================================================
+            window.adminLogin = function () {
+                var key = document.getElementById('admin-key-input').value.trim();
+                if (key === ADMIN_KEY) {
+                    adminAuthenticated = true;
+                    document.getElementById('admin-auth').classList.add('hidden');
+                    document.getElementById('admin-panel').classList.remove('hidden');
+                    loadAdminQuestions();
+                    liveLog('🔓 Admin panel unlocked', 'ok');
+                } else {
+                    alert('⛔ Admin key không hợp lệ!');
+                }
+            };
+
+            window.loadAdminQuestions = async function () {
+                if (!adminAuthenticated) return;
+                var subject = document.getElementById('admin-subject-filter').value;
+                var search = document.getElementById('admin-search').value.trim();
+
+                var url = '/api/admin/questions?';
+                if (subject) url += 'subject=' + encodeURIComponent(subject) + '&';
+                if (search) url += 'search=' + encodeURIComponent(search);
+
+                try {
+                    var res = await fetch(url);
+                    var questions = await res.json();
+                    renderAdminTable(questions);
+                } catch (e) {
+                    console.error('Error loading admin questions:', e);
+                }
+            };
+
+            window.debounceAdminSearch = function () {
+                clearTimeout(adminSearchTimer);
+                adminSearchTimer = setTimeout(function () { loadAdminQuestions(); }, 300);
+            };
+
+            function renderAdminTable(questions) {
+                var tbody = document.getElementById('admin-tbody');
+                var countEl = document.getElementById('admin-count');
+                countEl.textContent = questions.length + ' câu';
+
+                if (questions.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8" style="color:var(--text-muted)">Không có câu hỏi nào</td></tr>';
+                    return;
+                }
+
+                var letters = ['A', 'B', 'C', 'D', 'E'];
+                tbody.innerHTML = questions.map(function (q, i) {
+                    var ansLetter = q.answer !== undefined ? (letters[q.answer] || q.answer) : '?';
+                    return '<tr>' +
+                        '<td>' + (i + 1) + '</td>' +
+                        '<td title="' + (q.q || '').replace(/"/g, '&quot;') + '">' + (q.q || '') + '</td>' +
+                        '<td><span class="tag-chip" style="background:var(--bg-card);color:var(--accent-1);border:1px solid var(--border-primary)">' + formatSubjectName(q.subject || '') + '</span></td>' +
+                        '<td style="color:var(--neon-green);font-weight:700">' + ansLetter + '</td>' +
+                        '<td><div class="flex gap-2">' +
+                        '<button onclick="editAdminQuestion(\'' + (q.id || q._id || q.q_id || '') + '\')" class="text-xs px-2 py-1 rounded" style="border:1px solid var(--accent-1);color:var(--accent-1);background:transparent;cursor:pointer;">✏️</button>' +
+                        '<button onclick="deleteAdminQuestion(\'' + (q.id || q._id || q.q_id || '') + '\')" class="text-xs px-2 py-1 rounded" style="border:1px solid var(--neon-red);color:var(--neon-red);background:transparent;cursor:pointer;">🗑️</button>' +
+                        '</div></td>' +
+                        '</tr>';
+                }).join('');
+            }
+
+            window.openAddModal = function () {
+                document.getElementById('modal-title').textContent = 'Thêm câu hỏi';
+                document.getElementById('modal-q').value = '';
+                document.getElementById('modal-options').value = '';
+                document.getElementById('modal-answer').value = '0';
+                document.getElementById('modal-edit-id').value = '';
+                document.getElementById('admin-modal').classList.remove('hidden');
+            };
+
+            window.editAdminQuestion = async function (id) {
+                if (!id) return;
+                try {
+                    var res = await fetch('/api/admin/questions?search=' + encodeURIComponent(id));
+                    var questions = await res.json();
+                    var q = questions.find(function (x) { return (x.id || x._id || x.q_id) === id; });
+                    if (!q) { alert('Không tìm thấy câu hỏi!'); return; }
+
+                    document.getElementById('modal-title').textContent = 'Sửa câu hỏi';
+                    document.getElementById('modal-q').value = q.q || '';
+                    document.getElementById('modal-options').value = (q.options || []).join('\n');
+                    document.getElementById('modal-answer').value = q.answer !== undefined ? q.answer : 0;
+                    document.getElementById('modal-subject').value = q.subject || '';
+                    document.getElementById('modal-edit-id').value = id;
+                    document.getElementById('admin-modal').classList.remove('hidden');
+                } catch (e) { alert('Lỗi: ' + e.message); }
+            };
+
+            window.deleteAdminQuestion = async function (id) {
+                if (!id) return;
+                if (!confirm('Xóa câu hỏi này?')) return;
+                try {
+                    await fetch('/api/admin/question/' + id, {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ admin_key: ADMIN_KEY })
+                    });
+                    liveLog('🗑️ Đã xóa câu hỏi ' + id, 'ok');
+                    loadAdminQuestions();
+                } catch (e) { alert('Lỗi: ' + e.message); }
+            };
+
+            window.saveAdminQuestion = async function () {
+                var q = document.getElementById('modal-q').value.trim();
+                var optionsText = document.getElementById('modal-options').value.trim();
+                var answer = parseInt(document.getElementById('modal-answer').value);
+                var subject = document.getElementById('modal-subject').value;
+                var editId = document.getElementById('modal-edit-id').value;
+
+                if (!q || !optionsText) return alert('Hãy nhập câu hỏi và các lựa chọn!');
+
+                var options = optionsText.split('\n').map(function (o) { return o.trim(); }).filter(function (o) { return o.length > 0; });
+                if (options.length < 2) return alert('Cần ít nhất 2 lựa chọn!');
+
+                var payload = {
+                    q: q,
+                    options: options,
+                    answer: answer,
+                    subject: subject,
+                    admin_key: ADMIN_KEY
+                };
+
+                try {
+                    if (editId) {
+                        await fetch('/api/admin/question/' + editId, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        liveLog('✏️ Đã cập nhật câu hỏi', 'ok');
+                    } else {
+                        await fetch('/api/admin/question', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        liveLog('✅ Đã thêm câu hỏi mới', 'ok');
+                    }
+                    closeAdminModal();
+                    loadAdminQuestions();
+                } catch (e) { alert('Lỗi: ' + e.message); }
+            };
+
+            window.closeAdminModal = function () {
+                document.getElementById('admin-modal').classList.add('hidden');
+            };
+
+            window.exportAdminJSON = async function () {
+                try {
+                    var res = await fetch('/api/admin/questions');
+                    var questions = await res.json();
+                    var blob = new Blob([JSON.stringify(questions, null, 2)], { type: 'application/json' });
+                    var url = URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'questions_export_' + new Date().toISOString().slice(0, 10) + '.json';
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    liveLog('📤 Exported ' + questions.length + ' questions', 'ok');
+                } catch (e) { alert('Lỗi export: ' + e.message); }
+            };
+
+            window.importAdminJSON = async function (event) {
+                var file = event.target.files[0];
+                if (!file) return;
+                try {
+                    var text = await file.text();
+                    var questions = JSON.parse(text);
+                    if (!Array.isArray(questions)) { alert('File phải là mảng JSON!'); return; }
+
+                    var success = 0;
+                    for (var i = 0; i < questions.length; i++) {
+                        var q = questions[i];
+                        try {
+                            await fetch('/api/admin/question', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    q: q.q,
+                                    options: q.options,
+                                    answer: q.answer !== undefined ? q.answer : (q.ans !== undefined ? q.ans : 0),
+                                    subject: q.subject || 'network',
+                                    admin_key: ADMIN_KEY
+                                })
+                            });
+                            success++;
+                        } catch (e) { }
+                    }
+                    alert('Đã import ' + success + '/' + questions.length + ' câu hỏi!');
+                    liveLog('📥 Imported ' + success + ' questions', 'ok');
+                    loadAdminQuestions();
+                } catch (e) { alert('Lỗi import: ' + e.message); }
+                event.target.value = '';
+            };
+
+            window.addNewSubject = async function () {
+                var name = document.getElementById('new-subject-name').value.trim();
+                if (!name) return alert('Hãy nhập tên môn học!');
+                try {
+                    await fetch('/api/admin/subjects', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name: name, admin_key: ADMIN_KEY })
+                    });
+                    liveLog('✅ Đã thêm môn: ' + name, 'ok');
+                    document.getElementById('new-subject-name').value = '';
+                    await loadSubjects();
+                    loadAdminQuestions();
+                } catch (e) { alert('Lỗi: ' + e.message); }
+            };
+
+            // ============================================================
+            // 17. MATRIX RAIN EFFECT
+            // ============================================================
+            function initMatrix() {
+                var canvas = document.getElementById('matrix-canvas');
+                var ctx = canvas.getContext('2d');
+
+                function resizeCanvas() {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                }
+                resizeCanvas();
+                window.addEventListener('resize', resizeCanvas);
+
+                var COL_W = 15;
+                var drops = [];
+                function initDrops() {
+                    drops = Array(Math.floor(canvas.width / COL_W)).fill(1);
+                }
+                initDrops();
+                window.addEventListener('resize', initDrops);
+
+                var chars = '01アイウエオカキクケコサシスセソ';
+
+                setInterval(function () {
+                    ctx.fillStyle = 'rgba(2,2,5,0.05)';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    var themeColor = getComputedStyle(document.documentElement).getPropertyValue('--matrix-color').trim() || '#0ff';
+                    ctx.fillStyle = themeColor;
+                    ctx.font = '12px monospace';
+
+                    drops.forEach(function (y, i) {
+                        var char = chars.charAt(Math.floor(Math.random() * chars.length));
+                        ctx.fillText(char, i * COL_W, y * COL_W);
+                        if (y * COL_W > canvas.height && Math.random() > 0.975) drops[i] = 0;
                         drops[i]++;
                     });
                 }, 50);
+            }
+
+            // ============================================================
+            // 18. FLOATING PARTICLES EFFECT
+            // ============================================================
+            function initParticles() {
+                var canvas = document.getElementById('particles-canvas');
+                var ctx = canvas.getContext('2d');
+                var particles = [];
+                var maxParticles = 40;
+
+                function resize() {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                }
+                resize();
+                window.addEventListener('resize', resize);
+
+                function Particle() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 2 + 0.5;
+                    this.speedX = (Math.random() - 0.5) * 0.3;
+                    this.speedY = (Math.random() - 0.5) * 0.3;
+                    this.opacity = Math.random() * 0.4 + 0.1;
+                }
+
+                for (var i = 0; i < maxParticles; i++) {
+                    particles.push(new Particle());
+                }
+
+                function animate() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    particles.forEach(function (p) {
+                        p.x += p.speedX;
+                        p.y += p.speedY;
+                        if (p.x < 0) p.x = canvas.width;
+                        if (p.x > canvas.width) p.x = 0;
+                        if (p.y < 0) p.y = canvas.height;
+                        if (p.y > canvas.height) p.y = 0;
+
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                        ctx.fillStyle = 'rgba(0, 242, 255, ' + p.opacity + ')';
+                        ctx.fill();
+                    });
+
+                    // Draw connections
+                    for (var i = 0; i < particles.length; i++) {
+                        for (var j = i + 1; j < particles.length; j++) {
+                            var dx = particles[i].x - particles[j].x;
+                            var dy = particles[i].y - particles[j].y;
+                            var dist = Math.sqrt(dx * dx + dy * dy);
+                            if (dist < 120) {
+                                ctx.beginPath();
+                                ctx.moveTo(particles[i].x, particles[i].y);
+                                ctx.lineTo(particles[j].x, particles[j].y);
+                                ctx.strokeStyle = 'rgba(0, 242, 255, ' + (0.05 * (1 - dist / 120)) + ')';
+                                ctx.lineWidth = 0.5;
+                                ctx.stroke();
+                            }
+                        }
+                    }
+                    requestAnimationFrame(animate);
+                }
+                animate();
+            }
+
+            // ============================================================
+            // 19. INITIALIZATION
+            // ============================================================
+            window.onload = async function () {
+                // Apply saved theme
+                applyTheme(currentThemeIdx);
+
+                // Init visual effects
+                initMatrix();
+                initParticles();
+
+                // Load subjects from API
+                await loadSubjects();
+
+                // Show home section
+                window.showSection('home');
+
+                liveLog('System initialized — UET NET MASTER v4.0', 'ok');
             };
+
         })();
     </script>
 </body>
