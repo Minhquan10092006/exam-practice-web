@@ -1,3 +1,4 @@
+from pathlib import Path
 from fastapi import FastAPI, HTTPException, Body, Query
 import time
 from fastapi.responses import FileResponse
@@ -9,7 +10,6 @@ import os
 import re
 import json
 import base64
-import dns.resolver
 import bson
 from google import genai
 from Crypto.Cipher import AES
@@ -20,9 +20,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # --- PHẦN 1: CẤU HÌNH HỆ THỐNG (CONFIGURATION) ---
-# Ép dùng Google DNS để tránh lỗi Resolution (Phân giải tên miền) tại nhà mới
-dns.resolver.default_resolver = dns.resolver.Resolver(configure=False)
-dns.resolver.default_resolver.nameservers = ["8.8.8.8", "8.8.4.4"]
+
+# Absolute path to project root (works regardless of cwd)
+BASE_DIR = Path(__file__).resolve().parent
+
+# Only override DNS when running locally (Render sets the RENDER env var)
+if not os.getenv("RENDER"):
+    import dns.resolver
+    dns.resolver.default_resolver = dns.resolver.Resolver(configure=False)
+    dns.resolver.default_resolver.nameservers = ["8.8.8.8", "8.8.4.4"]
 
 app = FastAPI()  # Phải khởi tạo app ở đây trước khi dùng Decorator!
 
@@ -91,8 +97,9 @@ def question_helper(q) -> dict:
 
 @app.get("/")
 async def read_index():
-    if os.path.exists("index.html"):
-        return FileResponse("index.html")
+    index_path = BASE_DIR / "index.html"
+    if index_path.exists():
+        return FileResponse(index_path)
     return {"error": "Không tìm thấy file index.html!"}
 
 
@@ -462,4 +469,5 @@ async def admin_create_subject(data: dict = Body(...)):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    port = int(os.getenv("PORT", "8000"))
+    uvicorn.run(app, host="0.0.0.0", port=port)
