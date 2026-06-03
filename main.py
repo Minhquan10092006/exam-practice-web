@@ -1,6 +1,9 @@
 from pathlib import Path
 from fastapi import FastAPI, HTTPException, Body, Query
 import time
+import hashlib
+import hmac
+import secrets
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -64,6 +67,9 @@ client_gemini = genai.Client(api_key=GEMINI_API_KEY)
 # Khóa admin cố định để bảo vệ các endpoint quản trị
 ADMIN_KEY = "UET_MASTER"
 
+# Token secret for session tokens (reuses AES key for simplicity)
+TOKEN_SECRET = _aes_key_str.encode("utf-8")
+
 # --- PHẦN 2: CÔNG CỤ HỖ TRỢ (HELPERS) ---
 
 
@@ -93,6 +99,43 @@ def question_helper(q) -> dict:
     }
 
 
+def hash_password(password: str, salt: str = None) -> tuple:
+    """Hash password with SHA-256 + salt. Returns (hash, salt)."""
+    if salt is None:
+        salt = secrets.token_hex(16)
+    hashed = hashlib.sha256((salt + password).encode("utf-8")).hexdigest()
+    return hashed, salt
+
+
+def create_token(msv: str) -> str:
+    """Create a simple HMAC-based session token: base64(msv:timestamp:hmac)"""
+    ts = str(int(time.time()))
+    payload = f"{msv}:{ts}"
+    sig = hmac.new(TOKEN_SECRET, payload.encode("utf-8"), hashlib.sha256).hexdigest()
+    token_raw = f"{msv}:{ts}:{sig}"
+    return base64.urlsafe_b64encode(token_raw.encode("utf-8")).decode("utf-8")
+
+
+def verify_token(token: str) -> str | None:
+    """Verify token and return msv if valid (tokens valid for 7 days). Returns None if invalid."""
+    try:
+        decoded = base64.urlsafe_b64decode(token.encode("utf-8")).decode("utf-8")
+        parts = decoded.split(":")
+        if len(parts) != 3:
+            return None
+        msv, ts, sig = parts
+        # Verify HMAC
+        expected = hmac.new(TOKEN_SECRET, f"{msv}:{ts}".encode("utf-8"), hashlib.sha256).hexdigest()
+        if not hmac.compare_digest(sig, expected):
+            return None
+        # Check expiry (7 days)
+        if int(time.time()) - int(ts) > 7 * 86400:
+            return None
+        return msv
+    except Exception:
+        return None
+
+
 # --- PHẦN 3: CÁC ĐIỂM CUỐI (ENDPOINTS) ---
 
 
@@ -102,6 +145,166 @@ async def read_index():
     if index_path.exists():
         return FileResponse(index_path)
     return {"error": "Không tìm thấy file index.html!"}
+
+
+# --- PHẦN 3A: AUTHENTICATION ENDPOINTS ---
+
+
+@app.post("/api/auth/signup")
+async def auth_signup(data: dict = Body(...)):
+    """Đăng ký tài khoản mới với MSV, tên, và mật khẩu"""
+    msv = (data.get("msv") or "").strip()
+    password = (data.get("password") or "").strip()
+    name = (data.get("name") or "").strip()
+
+    if not msv or not password:
+        raise HTTPException(status_code=400, detail="MSV và mật khẩu không được để trống!")
+    if len(password) < 6:
+        raise HTTPException(status_code=400, detail="Mật khẩu phải có ít nhất 6 ký tự!")
+    if not name:
+        raise HTTPException(status_code=400, detail="Họ và tên không được để trống!")
+
+    # Check if MSV already exists
+    existing = await db.users.find_one({"msv": msv})
+    if existing:
+        raise HTTPException(status_code=409, detail="MSV này đã được đăng ký!")
+
+    # Hash password and store
+    hashed, salt = hash_password(password)
+    await db.users.insert_one({
+        "msv": msv,
+        "name": name,
+        "password_hash": hashed,
+        "salt": salt,
+        "created_at": time.time()
+    })
+
+    # Initialize empty user data
+    await db.user_data.insert_one({
+        "msv": msv,
+        "dashboard": {"events": [], "streak": 0, "lastDate": ""},
+        "wrong_questions": [],
+        "sr_data": {}
+    })
+
+    token = create_token(msv)
+    return {"status": "success", "token": token, "msv": msv, "name": name}
+
+
+@app.post("/api/auth/login")
+async def auth_login(data: dict = Body(...)):
+    """Đăng nhập bằng MSV và mật khẩu"""
+    msv = (data.get("msv") or "").strip()
+    password = (data.get("password") or "").strip()
+
+    if not msv or not password:
+        raise HTTPException(status_code=400, detail="MSV và mật khẩu không được để trống!")
+
+    user = await db.users.find_one({"msv": msv})
+    if not user:
+        raise HTTPException(status_code=401, detail="MSV không tồn tại!")
+
+    # Verify password
+    hashed, _ = hash_password(password, user["salt"])
+    if hashed != user["password_hash"]:
+        raise HTTPException(status_code=401, detail="Mật khẩu không đúng!")
+
+    token = create_token(msv)
+    return {"status": "success", "token": token, "msv": msv, "name": user.get("name", "")}
+
+
+@app.get("/api/auth/me")
+async def auth_me(token: str = Query(...)):
+    """Xác minh token và trả về thông tin user"""
+    msv = verify_token(token)
+    if not msv:
+        raise HTTPException(status_code=401, detail="Token không hợp lệ hoặc đã hết hạn!")
+    user = await db.users.find_one({"msv": msv})
+    if not user:
+        raise HTTPException(status_code=401, detail="User không tồn tại!")
+    return {"msv": msv, "name": user.get("name", "")}
+
+
+# --- PHẦN 3B: USER DATA PERSISTENCE ---
+
+
+@app.get("/api/user-data/{msv}")
+async def get_user_data(msv: str, token: str = Query(...)):
+    """Lấy toàn bộ dữ liệu học tập của user (dashboard, wrong_qs, sr)"""
+    token_msv = verify_token(token)
+    if not token_msv or token_msv != msv:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    doc = await db.user_data.find_one({"msv": msv})
+    if not doc:
+        return {"dashboard": {"events": [], "streak": 0, "lastDate": ""}, "wrong_questions": [], "sr_data": {}}
+
+    return {
+        "dashboard": doc.get("dashboard", {"events": [], "streak": 0, "lastDate": ""}),
+        "wrong_questions": doc.get("wrong_questions", []),
+        "sr_data": doc.get("sr_data", {})
+    }
+
+
+@app.put("/api/user-data/{msv}")
+async def save_user_data(msv: str, data: dict = Body(...)):
+    """Lưu/cập nhật dữ liệu học tập của user"""
+    token = data.get("token", "")
+    token_msv = verify_token(token)
+    if not token_msv or token_msv != msv:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    update_doc = {}
+    if "dashboard" in data:
+        update_doc["dashboard"] = data["dashboard"]
+    if "wrong_questions" in data:
+        update_doc["wrong_questions"] = data["wrong_questions"]
+    if "sr_data" in data:
+        update_doc["sr_data"] = data["sr_data"]
+
+    if update_doc:
+        await db.user_data.update_one(
+            {"msv": msv},
+            {"$set": update_doc},
+            upsert=True
+        )
+
+    return {"status": "saved"}
+
+
+# --- PHẦN 3C: AI DASHBOARD ANALYSIS ---
+
+
+@app.post("/api/analyze-dashboard")
+async def analyze_dashboard(data: dict = Body(...)):
+    """AI phân tích dashboard và đưa lời khuyên nâng điểm"""
+    try:
+        prompt = (
+            "Bạn là một trợ lý học tập AI. Hãy phân tích dữ liệu học tập sau của sinh viên "
+            "và đưa ra lời khuyên cụ thể để cải thiện điểm số trong kỳ thi.\n\n"
+            f"Dữ liệu:\n"
+            f"- Tổng số bài thi: {data.get('quizCount', 0)}\n"
+            f"- Tỷ lệ đúng trung bình: {data.get('accuracy', 0)}%\n"
+            f"- Số ngày streak học liên tiếp: {data.get('streak', 0)}\n"
+            f"- Số thẻ flashcard đã học: {data.get('cardsLearned', 0)}\n"
+            f"- Số câu sai chưa master: {data.get('wrongCount', 0)}\n"
+            f"- Thống kê theo môn: {json.dumps(data.get('subjectStats', {}), ensure_ascii=False)}\n"
+            f"- Lịch sử gần đây (10 bài gần nhất): {json.dumps(data.get('recentHistory', []), ensure_ascii=False)}\n\n"
+            "Yêu cầu:\n"
+            "1. Đánh giá tổng quan hiệu suất học tập (ngắn gọn).\n"
+            "2. Chỉ ra điểm mạnh và điểm yếu cụ thể.\n"
+            "3. Đưa ra 3-5 lời khuyên CỤ THỂ, HÀNH ĐỘNG ĐƯỢC để cải thiện điểm số.\n"
+            "4. Gợi ý chiến lược ôn thi hiệu quả dựa trên dữ liệu.\n"
+            "5. Trả lời bằng tiếng Việt, ngắn gọn, rõ ràng, dùng emoji để sinh động.\n"
+        )
+
+        response = client_gemini.models.generate_content(
+            model="gemini-3.1-flash-lite-preview", contents=prompt
+        )
+        return {"analysis": response.text}
+    except Exception as e:
+        print(f"Lỗi AI Dashboard Analysis: {e}")
+        return {"analysis": "⚠️ Hệ thống AI đang bận, vui lòng thử lại sau!"}
 
 
 @app.get("/api/questions/{subject}")

@@ -786,8 +786,15 @@
         }
 
         @keyframes fillBadgePulse {
-            0%, 100% { box-shadow: 0 0 0 rgba(255, 170, 0, 0); }
-            50% { box-shadow: 0 0 12px rgba(255, 170, 0, 0.2); }
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 rgba(255, 170, 0, 0);
+            }
+
+            50% {
+                box-shadow: 0 0 12px rgba(255, 170, 0, 0.2);
+            }
         }
 
         .fill-hint {
@@ -1523,28 +1530,101 @@
                 </div>
             </div>
 
-            <div class="max-w-sm mx-auto mb-10 glass-card space-y-5">
-                <div>
-                    <label class="block text-[10px] cyber-font mb-2 uppercase tracking-widest"
-                        style="color:var(--accent-1)">⚡ Identification: Full Name</label>
-                    <input type="text" id="user-name" placeholder="Họ và tên..." class="cyber-input">
+            <!-- AUTH CARD: Login / Signup -->
+            <div id="auth-card" class="max-w-md mx-auto mb-10 glass-card">
+                <!-- Auth Tabs -->
+                <div class="flex mb-6" style="border-bottom:1px solid var(--border-primary)">
+                    <button id="tab-login" onclick="switchAuthTab('login')"
+                        class="flex-1 py-3 text-sm font-bold cyber-font uppercase tracking-wider transition-all"
+                        style="color:var(--accent-1);border-bottom:2px solid var(--accent-1)">
+                        🔑 Đăng nhập
+                    </button>
+                    <button id="tab-signup" onclick="switchAuthTab('signup')"
+                        class="flex-1 py-3 text-sm font-bold cyber-font uppercase tracking-wider transition-all"
+                        style="color:var(--text-muted);border-bottom:2px solid transparent">
+                        📝 Đăng ký
+                    </button>
                 </div>
-                <div>
-                    <label class="block text-[10px] cyber-font mb-2 uppercase tracking-widest"
-                        style="color:var(--accent-1)">🔑 Access Key: Student ID</label>
-                    <input type="text" id="user-id" placeholder="Mã sinh viên..." class="cyber-input"
-                        oninput="this.value=this.value.replace(/[^0-9a-zA-Z_]/g,'').slice(0,20)">
+
+                <!-- Login Form -->
+                <div id="form-login" class="space-y-4">
+                    <div>
+                        <label class="block text-[10px] cyber-font mb-2 uppercase tracking-widest"
+                            style="color:var(--accent-1)">🔑 Access Key: Student ID (MSV)</label>
+                        <input type="text" id="login-msv" placeholder="Mã sinh viên..." class="cyber-input"
+                            oninput="this.value=this.value.replace(/[^0-9a-zA-Z_]/g,'').slice(0,20)">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] cyber-font mb-2 uppercase tracking-widest"
+                            style="color:var(--accent-1)">🔒 Password</label>
+                        <input type="password" id="login-password" placeholder="Mật khẩu..." class="cyber-input">
+                    </div>
+                    <div id="login-error" class="text-xs font-bold hidden" style="color:var(--neon-red)"></div>
+                    <button id="login-btn" onclick="doLogin()"
+                        class="w-full py-4 btn-primary cyber-font text-lg font-bold rounded-lg">
+                        ĐĂNG NHẬP
+                    </button>
                 </div>
-                <div>
-                    <label class="block text-[10px] cyber-font mb-2 uppercase tracking-widest"
-                        style="color:var(--accent-1)">🎯 Mission: Select Subject</label>
-                    <select id="subject-choice" class="cyber-input"></select>
+
+                <!-- Signup Form (hidden by default) -->
+                <div id="form-signup" class="space-y-4 hidden">
+                    <div>
+                        <label class="block text-[10px] cyber-font mb-2 uppercase tracking-widest"
+                            style="color:var(--accent-1)">⚡ Họ và tên</label>
+                        <input type="text" id="signup-name" placeholder="Họ và tên..." class="cyber-input">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] cyber-font mb-2 uppercase tracking-widest"
+                            style="color:var(--accent-1)">🔑 Student ID (MSV)</label>
+                        <input type="text" id="signup-msv" placeholder="Mã sinh viên..." class="cyber-input"
+                            oninput="this.value=this.value.replace(/[^0-9a-zA-Z_]/g,'').slice(0,20)">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] cyber-font mb-2 uppercase tracking-widest"
+                            style="color:var(--accent-1)">🔒 Password (tối thiểu 6 ký tự)</label>
+                        <input type="password" id="signup-password" placeholder="Mật khẩu..." class="cyber-input">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] cyber-font mb-2 uppercase tracking-widest"
+                            style="color:var(--accent-1)">🔒 Xác nhận Password</label>
+                        <input type="password" id="signup-confirm" placeholder="Nhập lại mật khẩu..."
+                            class="cyber-input">
+                    </div>
+                    <div id="signup-error" class="text-xs font-bold hidden" style="color:var(--neon-red)"></div>
+                    <button id="signup-btn" onclick="doSignup()"
+                        class="w-full py-4 btn-primary cyber-font text-lg font-bold rounded-lg">
+                        ĐĂNG KÝ
+                    </button>
                 </div>
             </div>
-            <button id="start-btn" onclick="prepareTest()"
-                class="px-12 py-5 btn-cyber cyber-font text-xl md:text-2xl font-bold rounded-lg">
-                THIẾT LẬP KẾT NỐI (START)
-            </button>
+
+            <!-- LOGGED IN: Subject selector + START (hidden until auth) -->
+            <div id="logged-in-area" class="hidden">
+                <div class="max-w-sm mx-auto mb-6 glass-card text-center">
+                    <div class="flex items-center justify-center gap-3 mb-5">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold cyber-font"
+                            style="background:var(--accent-1);color:#000" id="user-avatar">?</div>
+                        <div class="text-left">
+                            <div class="text-sm font-bold" id="user-display-name">—</div>
+                            <div class="text-xs mono-font" style="color:var(--text-muted)" id="user-display-msv">—</div>
+                        </div>
+                        <button onclick="doLogout()"
+                            class="ml-auto text-xs px-3 py-1.5 rounded-lg cyber-font font-bold transition"
+                            style="border:1px solid var(--neon-red);color:var(--neon-red);background:transparent">
+                            Logout
+                        </button>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] cyber-font mb-2 uppercase tracking-widest"
+                            style="color:var(--accent-1)">🎯 Mission: Select Subject</label>
+                        <select id="subject-choice" class="cyber-input"></select>
+                    </div>
+                </div>
+                <button id="start-btn" onclick="prepareTest()"
+                    class="px-12 py-5 btn-cyber cyber-font text-xl md:text-2xl font-bold rounded-lg">
+                    THIẾT LẬP KẾT NỐI (START)
+                </button>
+            </div>
         </section>
 
         <!-- ============================================================
@@ -1892,6 +1972,32 @@
                 </div>
             </div>
 
+            <!-- AI Dashboard Analysis -->
+            <div class="dash-card mb-8"
+                style="border:1px solid rgba(255,0,255,0.2);background:linear-gradient(135deg, rgba(255,0,255,0.03), rgba(0,242,255,0.03))">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-left">
+                    <div>
+                        <h3 class="uppercase font-bold text-sm tracking-wider mb-1" style="color:var(--accent-2)">🤖
+                            AI Learning Advisor</h3>
+                        <p class="text-xs" style="color:var(--text-muted)">AI sẽ phân tích toàn bộ dữ liệu học tập
+                            và đưa ra lời khuyên cá nhân hóa để nâng điểm thi.</p>
+                    </div>
+                    <button id="ai-analyze-btn" onclick="runDashboardAI()"
+                        class="px-8 py-4 text-sm font-bold uppercase rounded-lg cyber-font transition whitespace-nowrap"
+                        style="border:1px solid var(--accent-2);background:rgba(255,0,255,0.08);color:var(--accent-2);">
+                        🤖 AI PHÂN TÍCH
+                    </button>
+                </div>
+                <div id="ai-dashboard-result" class="hidden mt-6">
+                    <div class="rounded-xl p-5 text-sm leading-relaxed whitespace-pre-wrap"
+                        style="background:rgba(255,0,255,0.03);border:1px solid rgba(255,0,255,0.15);color:var(--text-secondary)">
+                        <div id="ai-dashboard-loading" class="dot-pulse" style="color:var(--text-muted)">Đang phân tích
+                        </div>
+                        <div id="ai-dashboard-text" class="hidden"></div>
+                    </div>
+                </div>
+            </div>
+
             <div class="text-center">
                 <button onclick="clearDashboard()" class="text-xs transition cyber-font uppercase"
                     style="color:var(--text-muted);">Xoá dữ liệu</button>
@@ -2018,7 +2124,8 @@
             </div>
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs cyber-font mb-1 uppercase" style="color:var(--accent-1)">Loại câu hỏi</label>
+                    <label class="block text-xs cyber-font mb-1 uppercase" style="color:var(--accent-1)">Loại câu
+                        hỏi</label>
                     <select id="modal-type" class="cyber-input" onchange="toggleModalType()">
                         <option value="multiple_choice">Trắc nghiệm (Multiple Choice)</option>
                         <option value="short_answer">Câu hỏi điền (Fill / Short Answer)</option>
@@ -2047,7 +2154,8 @@
                     </div>
                 </div>
                 <div id="modal-ans-text-group" class="hidden">
-                    <label class="block text-xs cyber-font mb-1 uppercase" style="color:var(--neon-yellow)">📝 Đáp án điền (text)</label>
+                    <label class="block text-xs cyber-font mb-1 uppercase" style="color:var(--neon-yellow)">📝 Đáp án
+                        điền (text)</label>
                     <textarea id="modal-ans-text" class="cyber-input mono-font" rows="4"
                         placeholder="Nhập đáp án tham khảo cho câu hỏi điền..."></textarea>
                 </div>
@@ -2097,6 +2205,11 @@
                 questionStartTime: 0, currentSubject: '',
                 subjects: []
             };
+
+            // Auth state
+            let authToken = localStorage.getItem('uet_auth_token') || '';
+            let authMsv = localStorage.getItem('uet_auth_msv') || '';
+            let authName = localStorage.getItem('uet_auth_name') || '';
 
             const SECRET_KEY = CryptoJS.enc.Utf8.parse('UET_PROCTOR_2026');
             const IV = CryptoJS.enc.Utf8.parse('1234567890123456');
@@ -2399,6 +2512,15 @@
             // 8. NAVIGATION
             // ============================================================
             window.showSection = function (id) {
+                // Warn if leaving active quiz
+                if (state.testing && id !== 'quiz') {
+                    if (!confirm('Bạn đang làm bài thi. Rời đi sẽ kết thúc bài thi. Tiếp tục?')) {
+                        return; // Stay on quiz
+                    }
+                    // Cleanup quiz state
+                    state.testing = false;
+                    clearInterval(state.timer);
+                }
                 const targetEl = document.getElementById('section-' + id);
                 document.querySelectorAll('.app-section').forEach(function (s) {
                     if (s === targetEl) return;
@@ -2421,21 +2543,206 @@
             };
 
             // ============================================================
+            // 8B. AUTH MODULE
+            // ============================================================
+            window.switchAuthTab = function (tab) {
+                var loginTab = document.getElementById('tab-login');
+                var signupTab = document.getElementById('tab-signup');
+                var loginForm = document.getElementById('form-login');
+                var signupForm = document.getElementById('form-signup');
+                if (tab === 'login') {
+                    loginTab.style.color = 'var(--accent-1)'; loginTab.style.borderBottom = '2px solid var(--accent-1)';
+                    signupTab.style.color = 'var(--text-muted)'; signupTab.style.borderBottom = '2px solid transparent';
+                    loginForm.classList.remove('hidden'); signupForm.classList.add('hidden');
+                } else {
+                    signupTab.style.color = 'var(--accent-1)'; signupTab.style.borderBottom = '2px solid var(--accent-1)';
+                    loginTab.style.color = 'var(--text-muted)'; loginTab.style.borderBottom = '2px solid transparent';
+                    signupForm.classList.remove('hidden'); loginForm.classList.add('hidden');
+                }
+            };
+
+            function showAuthError(formId, msg) {
+                var el = document.getElementById(formId);
+                if (el) { el.textContent = msg; el.classList.remove('hidden'); }
+            }
+            function hideAuthError(formId) {
+                var el = document.getElementById(formId);
+                if (el) { el.textContent = ''; el.classList.add('hidden'); }
+            }
+
+            window.doLogin = async function () {
+                hideAuthError('login-error');
+                var msv = document.getElementById('login-msv').value.trim();
+                var password = document.getElementById('login-password').value;
+                if (!msv || !password) { showAuthError('login-error', 'Vui lòng nhập MSV và mật khẩu!'); return; }
+
+                var btn = document.getElementById('login-btn');
+                btn.disabled = true; btn.innerHTML = '<span class="btn-spinner"></span> ĐANG XỬ LÝ...';
+                try {
+                    var res = await fetch('/api/auth/login', {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ msv: msv, password: password })
+                    });
+                    var data = await res.json();
+                    if (!res.ok) { showAuthError('login-error', data.detail || 'Đăng nhập thất bại!'); return; }
+                    // Save auth
+                    authToken = data.token; authMsv = data.msv; authName = data.name;
+                    localStorage.setItem('uet_auth_token', authToken);
+                    localStorage.setItem('uet_auth_msv', authMsv);
+                    localStorage.setItem('uet_auth_name', authName);
+                    await loadUserDataFromServer();
+                    showLoggedInState();
+                    liveLog('🔓 Đăng nhập thành công: ' + authMsv, 'ok');
+                } catch (e) {
+                    showAuthError('login-error', 'Lỗi kết nối server!');
+                } finally {
+                    btn.disabled = false; btn.innerHTML = 'ĐĂNG NHẬP';
+                }
+            };
+
+            window.doSignup = async function () {
+                hideAuthError('signup-error');
+                var name = document.getElementById('signup-name').value.trim();
+                var msv = document.getElementById('signup-msv').value.trim();
+                var password = document.getElementById('signup-password').value;
+                var confirm = document.getElementById('signup-confirm').value;
+                if (!name) { showAuthError('signup-error', 'Vui lòng nhập họ và tên!'); return; }
+                if (!msv) { showAuthError('signup-error', 'Vui lòng nhập MSV!'); return; }
+                if (!password || password.length < 6) { showAuthError('signup-error', 'Mật khẩu phải có ít nhất 6 ký tự!'); return; }
+                if (password !== confirm) { showAuthError('signup-error', 'Mật khẩu xác nhận không khớp!'); return; }
+
+                var btn = document.getElementById('signup-btn');
+                btn.disabled = true; btn.innerHTML = '<span class="btn-spinner"></span> ĐANG XỬ LÝ...';
+                try {
+                    var res = await fetch('/api/auth/signup', {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ msv: msv, password: password, name: name })
+                    });
+                    var data = await res.json();
+                    if (!res.ok) { showAuthError('signup-error', data.detail || 'Đăng ký thất bại!'); return; }
+                    // Save auth
+                    authToken = data.token; authMsv = data.msv; authName = data.name;
+                    localStorage.setItem('uet_auth_token', authToken);
+                    localStorage.setItem('uet_auth_msv', authMsv);
+                    localStorage.setItem('uet_auth_name', authName);
+                    showLoggedInState();
+                    liveLog('✅ Đăng ký thành công: ' + authMsv, 'ok');
+                } catch (e) {
+                    showAuthError('signup-error', 'Lỗi kết nối server!');
+                } finally {
+                    btn.disabled = false; btn.innerHTML = 'ĐĂNG KÝ';
+                }
+            };
+
+            window.doLogout = function () {
+                authToken = ''; authMsv = ''; authName = '';
+                localStorage.removeItem('uet_auth_token');
+                localStorage.removeItem('uet_auth_msv');
+                localStorage.removeItem('uet_auth_name');
+                state.studentId = ''; state.studentName = '';
+                document.getElementById('auth-card').classList.remove('hidden');
+                document.getElementById('logged-in-area').classList.add('hidden');
+                liveLog('🔒 Đã đăng xuất', 'ok');
+            };
+
+            function showLoggedInState() {
+                document.getElementById('auth-card').classList.add('hidden');
+                document.getElementById('logged-in-area').classList.remove('hidden');
+                document.getElementById('user-display-name').textContent = authName;
+                document.getElementById('user-display-msv').textContent = authMsv;
+                document.getElementById('user-avatar').textContent = (authName || '?').charAt(0).toUpperCase();
+                state.studentId = authMsv;
+                state.studentName = authName;
+            }
+
+            async function autoLogin() {
+                if (!authToken) return;
+                try {
+                    var res = await fetch('/api/auth/me?token=' + encodeURIComponent(authToken));
+                    if (!res.ok) { window.doLogout(); return; }
+                    var data = await res.json();
+                    authMsv = data.msv; authName = data.name;
+                    localStorage.setItem('uet_auth_msv', authMsv);
+                    localStorage.setItem('uet_auth_name', authName);
+                    await loadUserDataFromServer();
+                    showLoggedInState();
+                    liveLog('🔓 Auto-login: ' + authMsv, 'ok');
+                } catch (e) {
+                    // Server unreachable, use cached data
+                    if (authMsv) {
+                        showLoggedInState();
+                        liveLog('⚠️ Offline mode — using cached data', 'warn');
+                    }
+                }
+            }
+
+            // ============================================================
+            // 8C. SERVER-SIDE DATA SYNC
+            // ============================================================
+            var syncTimer = null;
+            function syncToServer() {
+                // Debounce: wait 1s after last change before syncing
+                clearTimeout(syncTimer);
+                syncTimer = setTimeout(function () { doSyncToServer(); }, 1000);
+            }
+
+            async function doSyncToServer() {
+                if (!authToken || !authMsv) return;
+                try {
+                    var dashData = getDashData();
+                    var wrongQs = [];
+                    try { wrongQs = JSON.parse(localStorage.getItem(getWrongQKey()) || '[]'); } catch (e) { wrongQs = []; }
+                    var srData = getSRData();
+
+                    await fetch('/api/user-data/' + authMsv, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            token: authToken,
+                            dashboard: dashData,
+                            wrong_questions: wrongQs,
+                            sr_data: srData
+                        })
+                    });
+                } catch (e) {
+                    // Silent fail — data is still in localStorage
+                }
+            }
+
+            async function loadUserDataFromServer() {
+                if (!authToken || !authMsv) return;
+                try {
+                    var res = await fetch('/api/user-data/' + authMsv + '?token=' + encodeURIComponent(authToken));
+                    if (!res.ok) return;
+                    var data = await res.json();
+                    // Populate localStorage with server data
+                    if (data.dashboard) {
+                        localStorage.setItem('uet_dash_' + authMsv, JSON.stringify(data.dashboard));
+                    }
+                    if (data.wrong_questions) {
+                        localStorage.setItem('uet_wrong_qs_' + authMsv, JSON.stringify(data.wrong_questions));
+                    }
+                    if (data.sr_data) {
+                        localStorage.setItem('uet_sr_' + authMsv, JSON.stringify(data.sr_data));
+                    }
+                } catch (e) {
+                    // Silent fail — use whatever is in localStorage
+                }
+            }
+
+            // ============================================================
             // 9. QUIZ MODULE
             // ============================================================
             window.prepareTest = async function () {
-                const name = document.getElementById('user-name').value.trim();
-                const mssv = document.getElementById('user-id').value.trim();
+                if (!authMsv) return alert('Vui lòng đăng nhập trước!');
                 const subject = document.getElementById('subject-choice').value;
 
-                if (!name || !mssv) return alert('Hãy nhập đầy đủ họ tên và mã sinh viên!');
-
-                state.studentName = name;
-                state.studentId = mssv;
+                state.studentName = authName;
+                state.studentId = authMsv;
                 state.currentSubject = subject;
 
                 // GOD MODE
-                if (mssv === 'UET_MASTER' || name.toUpperCase() === 'NGUYỄN MINH QUÂN') {
+                if (authMsv === 'UET_MASTER') {
                     state.isMaster = true;
                     liveLog('💎 GOD MODE: ACTIVATED — SECURITY BYPASS ENABLED', 'ok');
                 } else {
@@ -2477,16 +2784,16 @@
                     state.bank = questions;
 
                     // Separate short_answer and MCQ, then mix: 2-3 fill + rest MCQ = 30 total
-                    var fillQs = state.bank.filter(function(q) { return q.type === 'short_answer'; });
-                    var mcqQs = state.bank.filter(function(q) { return q.type !== 'short_answer'; });
-                    fillQs.sort(function() { return 0.5 - Math.random(); });
-                    mcqQs.sort(function() { return 0.5 - Math.random(); });
+                    var fillQs = state.bank.filter(function (q) { return q.type === 'short_answer'; });
+                    var mcqQs = state.bank.filter(function (q) { return q.type !== 'short_answer'; });
+                    fillQs.sort(function () { return 0.5 - Math.random(); });
+                    mcqQs.sort(function () { return 0.5 - Math.random(); });
 
                     var fillCount = Math.min(fillQs.length, Math.floor(Math.random() * 2) + 2); // 2-3 fill
                     var mcqCount = 30 - fillCount;
                     var selectedFill = fillQs.slice(0, fillCount);
                     var selectedMcq = mcqQs.slice(0, mcqCount);
-                    state.activeQs = [].concat(selectedMcq, selectedFill).sort(function() { return 0.5 - Math.random(); });
+                    state.activeQs = [].concat(selectedMcq, selectedFill).sort(function () { return 0.5 - Math.random(); });
                     state.cur = 0;
                     state.ans = [];
                     state.tabOuts = 0; state.copyAttempts = 0; state.pasteAttempts = 0;
@@ -2495,6 +2802,7 @@
                     state.testing = true;
 
                     window.showSection('quiz');
+                    restoreBtn();
                     loadQ();
 
                 } catch (e) {
@@ -2571,7 +2879,7 @@
                     ta.rows = 5;
                     optBox.appendChild(ta);
                     // Auto focus
-                    setTimeout(function() { ta.focus(); }, 100);
+                    setTimeout(function () { ta.focus(); }, 100);
                 } else {
                     // Render multiple choice options
                     var letters = ['A', 'B', 'C', 'D', 'E'];
@@ -3116,10 +3424,10 @@
                     submitBtn.className = 'btn-primary cyber-font font-bold text-sm mt-4';
                     submitBtn.style.cssText = 'display:block;width:100%;padding:14px;';
                     submitBtn.textContent = '👁 XEM ĐÁP ÁN';
-                    submitBtn.onclick = function() { practiceSubmitFill(); };
+                    submitBtn.onclick = function () { practiceSubmitFill(); };
                     optBox.appendChild(submitBtn);
 
-                    setTimeout(function() { ta.focus(); }, 100);
+                    setTimeout(function () { ta.focus(); }, 100);
                 } else {
                     var letters = ['A', 'B', 'C', 'D', 'E'];
                     q.options.forEach(function (o, i) {
@@ -3316,6 +3624,7 @@
 
             function setSRData(data) {
                 localStorage.setItem(getSRKey(), JSON.stringify(data));
+                syncToServer();
             }
 
             function trackSRCorrect(q_id) {
@@ -3362,6 +3671,7 @@
                         timestamp: Date.now()
                     });
                     localStorage.setItem(key, JSON.stringify(wrongQs));
+                    syncToServer();
                 }
             }
 
@@ -3371,6 +3681,7 @@
                     var wrongQs = JSON.parse(localStorage.getItem(key) || '[]');
                     wrongQs = wrongQs.filter(function (item) { return item.q_id !== q_id; });
                     localStorage.setItem(key, JSON.stringify(wrongQs));
+                    syncToServer();
                 } catch (e) { }
             }
 
@@ -3407,6 +3718,7 @@
                     d.lastDate = today;
                 }
                 setDashData(d);
+                syncToServer();
             }
 
             window.clearDashboard = function () {
@@ -3414,6 +3726,7 @@
                     localStorage.removeItem(getDashKey());
                     localStorage.removeItem(getWrongQKey());
                     localStorage.removeItem(getSRKey());
+                    syncToServer();
                     refreshDashboard();
                 }
             };
@@ -3947,7 +4260,72 @@
             }
 
             // ============================================================
-            // 19. INITIALIZATION
+            // 19. AI DASHBOARD ANALYSIS
+            // ============================================================
+            window.runDashboardAI = async function () {
+                var resultEl = document.getElementById('ai-dashboard-result');
+                var loadingEl = document.getElementById('ai-dashboard-loading');
+                var textEl = document.getElementById('ai-dashboard-text');
+                var btn = document.getElementById('ai-analyze-btn');
+
+                resultEl.classList.remove('hidden');
+                loadingEl.classList.remove('hidden');
+                textEl.classList.add('hidden');
+                btn.disabled = true;
+                btn.innerHTML = '<span class="btn-spinner" style="border-color:rgba(255,0,255,.3);border-top-color:var(--accent-2)"></span> ĐANG PHÂN TÍCH...';
+
+                // Gather dashboard data
+                var d = getDashData();
+                var practices = d.events.filter(function (e) { return e.type === 'practice'; });
+                var totalCorrect = 0, totalQs = 0;
+                var subjectStats = {};
+                practices.forEach(function (p) {
+                    totalCorrect += (p.correct || 0);
+                    totalQs += (p.total || 0);
+                    if (p.subject) {
+                        if (!subjectStats[p.subject]) subjectStats[p.subject] = { correct: 0, total: 0 };
+                        subjectStats[p.subject].correct += (p.correct || 0);
+                        subjectStats[p.subject].total += (p.total || 0);
+                    }
+                });
+                var accuracy = totalQs > 0 ? Math.round(totalCorrect / totalQs * 100) : 0;
+                var wrongQs = [];
+                try { wrongQs = JSON.parse(localStorage.getItem(getWrongQKey()) || '[]'); } catch (e) { }
+                var cardEvents = d.events.filter(function (e) { return e.type === 'card_known'; }).length;
+
+                var recentHistory = practices.slice(-10).reverse().map(function (p) {
+                    return { subject: p.subject, score: p.correct + '/' + p.total, date: p.date || '' };
+                });
+
+                try {
+                    var res = await fetch('/api/analyze-dashboard', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            quizCount: practices.length,
+                            accuracy: accuracy,
+                            streak: d.streak || 0,
+                            cardsLearned: cardEvents,
+                            wrongCount: wrongQs.length,
+                            subjectStats: subjectStats,
+                            recentHistory: recentHistory
+                        })
+                    });
+                    var data = await res.json();
+                    loadingEl.classList.add('hidden');
+                    textEl.classList.remove('hidden');
+                    textEl.textContent = data.analysis || 'Không có dữ liệu phân tích.';
+                } catch (err) {
+                    loadingEl.classList.add('hidden');
+                    textEl.classList.remove('hidden');
+                    textEl.innerHTML = '<span style="color:var(--neon-red)">⚠️ Không thể kết nối AI. Vui lòng thử lại sau.</span>';
+                }
+                btn.disabled = false;
+                btn.innerHTML = '🤖 AI PHÂN TÍCH';
+            };
+
+            // ============================================================
+            // 20. INITIALIZATION
             // ============================================================
             window.onload = async function () {
                 // Apply saved theme
@@ -3962,6 +4340,9 @@
 
                 // Load subjects from API (non-blocking for UI)
                 await loadSubjects();
+
+                // Auto-login if token exists
+                await autoLogin();
 
                 liveLog('System initialized — UET NET MASTER v4.0', 'ok');
             };
