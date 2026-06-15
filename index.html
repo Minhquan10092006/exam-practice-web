@@ -671,8 +671,9 @@
             transform: translate(-50%, -50%);
             font-family: 'Chakra Petch', sans-serif;
             font-weight: 900;
-            font-size: 1rem;
+            font-size: 0.75rem;
             color: #fff;
+            white-space: nowrap;
         }
 
         /* Option buttons */
@@ -1517,8 +1518,8 @@
                     <div class="text-xs uppercase font-bold" style="color:var(--text-muted)">Câu hỏi</div>
                 </div>
                 <div class="stat-chip chip-pulse" style="animation-delay:.4s">
-                    <div class="text-3xl mb-1 font-black cyber-font" style="color:var(--accent-2)">30/90s</div>
-                    <div class="text-xs uppercase font-bold" style="color:var(--text-muted)">MCQ / Fill</div>
+                    <div class="text-3xl mb-1 font-black cyber-font" style="color:var(--accent-2)">45p</div>
+                    <div class="text-xs uppercase font-bold" style="color:var(--text-muted)">Giới hạn</div>
                 </div>
                 <div class="stat-chip chip-pulse" style="animation-delay:.8s">
                     <div class="text-3xl mb-1 font-black cyber-font" style="color:var(--neon-green)">AI</div>
@@ -1659,14 +1660,17 @@
                     style="background:rgba(0,242,255,0.04);border-bottom:1px solid var(--border-primary)">
                     <div class="cyber-font font-bold text-sm" style="color:var(--accent-1)" id="q-progress">FILE: 01/30
                     </div>
-                    <div class="timer-ring">
-                        <svg width="64" height="64" viewBox="0 0 64 64">
-                            <circle cx="32" cy="32" r="27"
-                                style="fill:none;stroke:rgba(255,255,255,0.05);stroke-width:4" />
-                            <circle id="timer-ring-fg" cx="32" cy="32" r="27"
-                                style="fill:none;stroke:#00ff88;stroke-width:4;stroke-linecap:round;stroke-dasharray:169.6;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear,stroke .5s" />
-                        </svg>
-                        <div id="timer-num">30</div>
+                    <div class="flex items-center gap-3">
+                        <div class="timer-ring">
+                            <svg width="64" height="64" viewBox="0 0 64 64">
+                                <circle cx="32" cy="32" r="27"
+                                    style="fill:none;stroke:rgba(255,255,255,0.05);stroke-width:4" />
+                                <circle id="timer-ring-fg" cx="32" cy="32" r="27"
+                                    style="fill:none;stroke:#00ff88;stroke-width:4;stroke-linecap:round;stroke-dasharray:169.6;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear,stroke .5s" />
+                            </svg>
+                            <div id="timer-num">45:00</div>
+                        </div>
+                        <div class="text-[10px] cyber-font uppercase tracking-wider" style="color:var(--text-muted)">Exam<br>Timer</div>
                     </div>
                 </div>
                 <div class="p-6 md:p-8">
@@ -2101,7 +2105,7 @@
                 <div class="p-5 rounded-xl mt-6"
                     style="border-left:4px solid var(--accent-1);background:var(--bg-card)">
                     <b style="color:var(--accent-1)">📚 CÁC CHẾ ĐỘ HỌC</b><br>
-                    <span class="text-sm">• <b>Quiz</b>: Kiểm tra với timer 30s/câu, AI giám sát<br>
+                    <span class="text-sm">• <b>Quiz</b>: Kiểm tra giới hạn 45 phút/bài, không giới hạn thời gian mỗi câu, AI giám sát<br>
                         • <b>Practice</b>: Luyện tập thoải mái, xem đáp án ngay<br>
                         • <b>Flash Cards</b>: Lật thẻ ôn tập, hỗ trợ spaced repetition<br>
                         • <b>AI Explain</b>: Nhờ AI giải thích chi tiết mọi câu hỏi</span>
@@ -2804,6 +2808,7 @@
                     window.showSection('quiz');
                     restoreBtn();
                     loadQ();
+                    startExamTimer(); // Start the 45-minute exam-wide timer
 
                 } catch (e) {
                     console.error(e);
@@ -2864,12 +2869,12 @@
                     // Render fill question: hint + textarea
                     var hintDiv = document.createElement('div');
                     hintDiv.className = 'fill-hint';
-                    hintDiv.innerHTML = '✏️ <span>CÂU HỎI ĐIỀN — Bạn có <strong>90 giây</strong> để trả lời câu này</span>';
+                    hintDiv.innerHTML = '✏️ <span>CÂU HỎI ĐIỀN — Không giới hạn thời gian mỗi câu</span>';
                     optBox.appendChild(hintDiv);
 
                     var badge = document.createElement('span');
                     badge.className = 'fill-badge mb-3';
-                    badge.innerHTML = '📝 FILL QUESTION — 90s';
+                    badge.innerHTML = '📝 FILL QUESTION';
                     optBox.appendChild(badge);
 
                     var ta = document.createElement('textarea');
@@ -2900,36 +2905,57 @@
                 var fill = document.getElementById('q-prog-fill');
                 if (fill) fill.style.width = (state.cur / state.activeQs.length * 100) + '%';
                 state.questionStartTime = Date.now();
-                startTimer(isFill ? 90 : 30);
+                // No per-question timer — exam timer runs globally
             }
 
-            function startTimer(seconds) {
+            function startExamTimer() {
                 clearInterval(state.timer);
-                var maxTime = seconds || 30;
+                var maxTime = 45 * 60; // 45 minutes in seconds
                 state.time = maxTime;
                 var numEl = document.getElementById('timer-num');
                 var ring = document.getElementById('timer-ring-fg');
                 var circ = 169.6;
 
+                function formatTime(totalSec) {
+                    var m = Math.floor(totalSec / 60);
+                    var s = totalSec % 60;
+                    return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+                }
+
                 function updateRing() {
                     var ratio = state.time / maxTime;
                     if (ring) {
                         ring.style.strokeDashoffset = circ * (1 - ratio);
-                        // Color thresholds adjusted for longer timers
+                        // Color thresholds: green > 50%, yellow > 20%, red <= 20%
                         var greenThreshold = maxTime * 0.5;
-                        var yellowThreshold = maxTime * 0.27;
+                        var yellowThreshold = maxTime * 0.2;
                         ring.style.stroke = state.time > greenThreshold ? '#00ff88' : state.time > yellowThreshold ? '#ffaa00' : '#ff3333';
                     }
                     if (numEl) {
-                        numEl.textContent = state.time;
-                        numEl.style.color = state.time > (maxTime * 0.27) ? '#fff' : '#ff3333';
+                        numEl.textContent = formatTime(state.time);
+                        numEl.style.color = state.time > (maxTime * 0.2) ? '#fff' : '#ff3333';
+                        // Add pulsing effect when time is low
+                        if (state.time <= 60) {
+                            numEl.style.animation = 'pulse-ring 1s ease-in-out infinite';
+                        } else {
+                            numEl.style.animation = 'none';
+                        }
                     }
                 }
                 updateRing();
                 state.timer = setInterval(function () {
                     state.time--;
                     updateRing();
-                    if (state.time <= 0) window.handleNext();
+                    if (state.time <= 0) {
+                        // Time's up — auto submit remaining answers and finish
+                        clearInterval(state.timer);
+                        // Fill remaining answers as unanswered
+                        while (state.ans.length < state.activeQs.length) {
+                            state.ans.push(-1);
+                        }
+                        state.cur = state.activeQs.length;
+                        finish();
+                    }
                 }, 1000);
             }
 
