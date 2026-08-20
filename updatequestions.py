@@ -1,4 +1,5 @@
 import asyncio
+import os
 from motor.motor_asyncio import AsyncIOMotorClient
 import dns.resolver
 
@@ -7,8 +8,10 @@ dns.resolver.default_resolver.nameservers = ["8.8.8.8", "8.8.4.4"]
 
 
 async def update_700_questions():
-    # Thay chuỗi này bằng Connection String (Chuỗi kết nối) Atlas của cậu chủ
-    uri = "mongodb+srv://mquan1009206:vaicalon@quiz.teadgrn.mongodb.net/?appName=quiz"
+    uri = os.getenv("MONGO_URI", "")
+    if not uri:
+        raise RuntimeError("Thiếu MONGO_URI trong biến môi trường!")
+
     client = AsyncIOMotorClient(uri)
 
     # Chọn Database và Collection
